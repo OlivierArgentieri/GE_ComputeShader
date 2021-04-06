@@ -1,0 +1,47 @@
+# Settings
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/Include/GL)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/Include/GLFW)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/Include/IMGUI)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/Include/glm)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/Header)
+
+# Files
+FILE(GLOB_RECURSE ENGINE_SOURCES *.cpp *.c)
+FILE(GLOB_RECURSE ENGINE_HEADERS *.h *.hpp *.inl)
+
+# imgui include folder
+FILE(GLOB IMGUI ${CMAKE_SOURCE_DIR}/Include/ImGUI/*.*)
+
+# glm
+FILE(GLOB GLM ${CMAKE_SOURCE_DIR}/Include/glm/*.*)
+
+# ge_window folder
+FILE(GLOB GE_WINDOW ${CMAKE_SOURCE_DIR}/GameEngine/Window/*.*)
+
+# ge_color folder
+FILE(GLOB GE_COLOR ${CMAKE_SOURCE_DIR}/GameEngine/Color/*.*)
+
+# ge_renderer folder
+FILE(GLOB GE_RENDERER ${CMAKE_SOURCE_DIR}/GameEngine/Renderer/*.*)
+
+
+ADD_EXECUTABLE(GameEngine
+	${ENGINE_SOURCES}
+	${ENGINE_HEADERS}
+	${IMGUI}
+	${GLM}
+	${GE_WINDOW}
+	${GE_COLOR}
+	${GE_RENDERER}
+
+) 
+TARGET_LINK_LIBRARIES(GameEngine glfw3 opengl32 User32 Gdi32 Shell32 glew32s)
+
+# Add filters
+SOURCE_GROUP(Include\\IMGUI FILES ${IMGUI})
+SOURCE_GROUP(GameEngine\\Window FILES ${GE_WINDOW})
+SOURCE_GROUP(GameEngine\\Color FILES ${GE_COLOR})
+SOURCE_GROUP(GameEngine\\Renderer FILES ${GE_RENDERER})
+
+# Compile option
+TARGET_COMPILE_DEFINITIONS(GameEngine PUBLIC GLEW_STATIC)
