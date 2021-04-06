@@ -10,6 +10,10 @@
 #include <iostream>
 #include <Windows.h>
 
+#include "Log.h"
+#include "Window.h"
+LogConfig LOG_CONFIG = {};
+
 typedef struct _COORDS_ {
 	GLfloat x;
 	GLfloat y;
@@ -54,7 +58,25 @@ void loadShader(char** shaderBuffer, const char* fileName) {
 
 int main(void)
 {
-	/* ----- Init window ----- */
+	const int SCREEN_WIDTH = 800;
+	const int SCREEN_HEIGHT = 640;
+
+	// Init Logging
+	// Log init
+	LOG_CONFIG.reporting_level = Debug;
+	LOG_CONFIG.restart = true;
+	if (LOG_CONFIG.restart) { Log::restart(); }
+
+	
+	// Init Window
+	/**/Window _window = Window("Hello framework");
+	if (!_window.Init(SCREEN_WIDTH, SCREEN_HEIGHT))
+	{
+		return 1;
+	}
+
+	
+	/* ----- Init window ----- #1# 
 
 	GLFWwindow* window;
 	if (!glfwInit()) {
@@ -76,9 +98,11 @@ int main(void)
 		std::cout << "Error glew";
 	}
 
-	std::cout << glGetString(GL_VERSION) << std::endl;
+	LOG(Info) << "WindowGLFW initialized";*/
 
-	/* ----- Quad Context ----- */
+	/*std::cout << glGetString(GL_VERSION) << std::endl;
+
+	/* ----- Quad Context ----- #1#
 
 	RGBAValues* quadTexture = new RGBAValues[640 * 480];
 	CoordinatesSet* quadVertex = new CoordinatesSet[4];
@@ -120,14 +144,14 @@ int main(void)
 	}
 
 
-	/* ----- Render Context ----- */
+	/* ----- Render Context ----- #1#
 
 	GLuint quadIBO;
 	GLuint quadVBO;
 	GLuint quadVAO;
 	GLuint quadTextureID;
 
-	/*Création de la texture */
+	/*Création de la texture #1#
 		glGenTextures(1, &quadTextureID);
 	glBindTexture(GL_TEXTURE_2D, quadTextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -164,7 +188,7 @@ int main(void)
 
 	glBindVertexArray(0);
 
-	/* ----- Compute Shader ----- */
+	/* ----- Compute Shader ----- #1#
 
 	GLuint computeShaderID;
 	GLuint csProgramID;
@@ -186,7 +210,7 @@ int main(void)
 	glDeleteShader(computeShaderID);
 
 
-	/* ----- Vertex shaders and Fragments shaders ----- */
+	/* ----- Vertex shaders and Fragments shaders ----- #1#
 
 	GLuint vertexShaderID;
 	GLuint fragmentShaderID;
@@ -225,7 +249,7 @@ int main(void)
 	if (strlen(ProgramErrorMessage) != 0)
 		std::cout << ProgramErrorMessage << "\n";
 
-	/* ----- Run Compute shader ----- */
+	/* ----- Run Compute shader ----- #1#
 	glUseProgram(csProgramID);
 	glBindTexture(GL_TEXTURE_2D, quadTextureID);
 	glBindImageTexture(0, quadTextureID, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -236,7 +260,7 @@ int main(void)
 	glUseProgram(0);
 
 
-	/* ----- Render loop ----- */
+	/* ----- Render loop ----- #1#
 	while (!glfwWindowShouldClose(window)) {
 
 		glfwPollEvents();
@@ -249,7 +273,7 @@ int main(void)
 
 		glEnable(GL_CULL_FACE);
 
-		/* ----- Actual render ----- */
+		/* ----- Actual render ----- #1#
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(programID);
@@ -269,7 +293,7 @@ int main(void)
 		glUseProgram(0);
 
 		glfwSwapBuffers(window);
-	}
+	}*/
 
 	return 0;
 
