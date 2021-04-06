@@ -2,8 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "ImGUI/imgui.h"
-#include "ImGUI/imgui_impl_opengl3.h"
-#include "ImGUI/imgui_impl_glfw.h"
 
 // custom glfw window
 
@@ -78,13 +76,7 @@ int main(void)
 		return 1;
 	}
 
-	// setup IMGUI
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(_window.GetWindow(), true);
-	ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+	
 	
 	// InitGame
 	 // Init Game
@@ -106,10 +98,7 @@ int main(void)
 		//_game.Update(_dt);
 
 		_window.ClearBuffer();
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		_window.NewImGUIFrame();
 
 		glBegin(GL_TRIANGLES);
 		glVertex2f(-0.5f, -0.5f);
@@ -141,8 +130,7 @@ int main(void)
 			ImGui::End();
 		}
 		
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		_window.ImGUIRender();
 		//_game.Render();
 		_window.SwapBuffer();
 		_timer.DelayTime();

@@ -1,10 +1,14 @@
 #include "Window.h"
 // #include "GlDebug.hpp" todo
 #include "Log.h"
-
 #include <iostream>
 
+/* log */
 #include "GlDebug.hpp"
+
+/* ImGUI */
+#include "ImGUI/imgui_impl_opengl3.h"
+#include "ImGUI/imgui_impl_glfw.h"
 
 using std::cout;
 using std::endl;
@@ -39,19 +43,8 @@ void Window::UpdateFpsCounter(float _dt)
 
 bool Window::Init(int _width, int _height)
 {
-    if (!glfwInit())
-    {
-	    const char** _error=nullptr;
-        glfwGetError(_error);
-        LOG(Error) << "GLFW initialisation failed";
-        LOG(Error) << _error;
-        return false;
-    }
-    LOG(Info) << "GLFW Initialized";
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // openGL version
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
+    
+    if (!InitGLFW()) return false;
 	
     window = glfwCreateWindow(_width, _height, title.c_str(), nullptr, nullptr);
     if (!window)
@@ -63,15 +56,12 @@ bool Window::Init(int _width, int _height)
 
     
     glfwMakeContextCurrent(window);
-    // OpenGL setup
-    if (glewInit() != GLEW_OK)
-    {
-        LOG(Info) << "GLEW Failed !";
-        return false;
-    }
-    LOG(Info) << "GLEW initialized";
-    LOG(Info) << "OPENGL Version : " << glGetString(GL_VERSION);
 
+	
+    if(!InitGLEW()) return false;
+	
+    if (!InitImGUI()) return false;
+	
     // Size of the viewport 
     glViewport(0, 0, _width, _height);
 
@@ -94,9 +84,10 @@ bool Window::Init(int _width, int _height)
     glCullFace(GL_BACK); // cull back face
     glFrontFace(GL_CCW); // GL_CCW for Counter Clock-Wise
 
-
     // Window color
     glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
+
+	
     return true;
 }
 
@@ -186,7 +177,67 @@ void Window::UpdateBackgroundColor(float _r, float _g, float _b, float _a)
     glClearColor(_r, _g, _b, _a);
 }
 
+void Window::NewImGUIFrame()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
+
+void Window::ImGUIRender()
+{
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 GLFWwindow* Window::GetWindow() const
 {
     return window;
+}
+
+bool Window::InitGLFW()
+{
+    if (!glfwInit())
+    {
+        const char** _error = nullptr;
+        glfwGetError(_error);
+        LOG(Error) << "GLFW initialisation failed";
+        LOG(Error) << _error;
+        return false;
+    }
+    LOG(Info) << "GLFW Initialized";
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // openGL version
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+	return true;
+}
+
+bool Window::InitGLEW()
+{
+    if (!window) return false;
+    // OpenGL setup
+    if (glewInit() != GLEW_OK)
+    {
+        LOG(Info) << "GLEW Failed !";
+        return false;
+    }
+    LOG(Info) << "GLEW initialized";
+    LOG(Info) << "OPENGL Version : " << glGetString(GL_VERSION);
+
+    return true;
+}
+
+bool Window::InitImGUI()
+{
+    if (!window) return false;
+    // setup IMGUI
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+
+    return true;
 }

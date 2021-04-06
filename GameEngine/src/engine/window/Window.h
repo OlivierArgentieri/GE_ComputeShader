@@ -23,8 +23,15 @@ public:
 	
     void UpdateInputEvent();
     void UpdateBackgroundColor(float _r, float _g, float _b, float _a);
+
+    void NewImGUIFrame();
+    void ImGUIRender();
     GLFWwindow* GetWindow() const;
 private:
+    bool InitGLFW();
+    bool InitGLEW();
+    bool InitImGUI();
+	
     GLFWwindow* window;
     const std::string& title;
 
