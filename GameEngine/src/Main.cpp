@@ -10,7 +10,10 @@
 #include <iostream>
 #include <Windows.h>
 
+
+#include "Game.h"
 #include "Log.h"
+#include "Timer.h"
 #include "Window.h"
 LogConfig LOG_CONFIG = {};
 
@@ -75,35 +78,83 @@ int main(void)
 		return 1;
 	}
 
+	// setup IMGUI
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(_window.GetWindow(), true);
+	ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 	
-	/* ----- Init window ----- #1# 
+	// InitGame
+	 // Init Game
+	Timer _timer;
+	Game _game;
+	_game.Init(SCREEN_WIDTH, SCREEN_WIDTH);
+	_game.Load();
 
-	GLFWwindow* window;
-	if (!glfwInit()) {
-		exit(-1);
+	float _dt = 0;
+	bool show_demo_window = true;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	while (_game.isRunning && !_window.WindowShouldClose())
+	{
+		_dt = static_cast<float>(_timer.ComputeDeltaTime());
+		_window.UpdateFpsCounter(_dt);
+		_window.UpdateBackgroundColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+		
+		//_game.HandleInputs();
+		//_game.Update(_dt);
+
+		_window.ClearBuffer();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		glBegin(GL_TRIANGLES);
+		glVertex2f(-0.5f, -0.5f);
+		glVertex2f(0.0f, 0.5f);
+		glVertex2f(0.5f, -0.5f);
+		glEnd();
+		
+
+
+		// one window
+		{
+			static float f = 0.0f;
+			static int counter = 0;
+
+			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+
+			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				counter++;
+			ImGui::SameLine();
+			ImGui::Text("counter = %d", counter);
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
+		
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		//_game.Render();
+		_window.SwapBuffer();
+		_timer.DelayTime();
+		_window.UpdateInputEvent();
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	_game.Clean();
+	_window.Clean();
 
-	window = glfwCreateWindow(640, 480, "Damn simple compute shader", NULL, NULL);
-
-	if (!window) {
-		exit(-2);
-	}
-
-	glfwMakeContextCurrent(window);
-
-	if (glewInit() != GLEW_OK) {
-		std::cout << "Error glew";
-	}
-
-	LOG(Info) << "WindowGLFW initialized";*/
-
-	/*std::cout << glGetString(GL_VERSION) << std::endl;
-
-	/* ----- Quad Context ----- #1#
-
+	return 0;
+	
+	/* ----- Quad Context ----- #1#*/
 	RGBAValues* quadTexture = new RGBAValues[640 * 480];
 	CoordinatesSet* quadVertex = new CoordinatesSet[4];
 	unsigned short int* quadIndex = new unsigned short int[3];
@@ -144,15 +195,15 @@ int main(void)
 	}
 
 
-	/* ----- Render Context ----- #1#
+	/* ----- Render Context ----- #1#*/
 
 	GLuint quadIBO;
 	GLuint quadVBO;
 	GLuint quadVAO;
 	GLuint quadTextureID;
 
-	/*Création de la texture #1#
-		glGenTextures(1, &quadTextureID);
+	/* Création de la texture #1# */
+	glGenTextures(1, &quadTextureID);
 	glBindTexture(GL_TEXTURE_2D, quadTextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -188,7 +239,7 @@ int main(void)
 
 	glBindVertexArray(0);
 
-	/* ----- Compute Shader ----- #1#
+	/* ----- Compute Shader ----- #1# */
 
 	GLuint computeShaderID;
 	GLuint csProgramID;
@@ -200,8 +251,8 @@ int main(void)
 
 	computeShaderID = glCreateShader(GL_COMPUTE_SHADER);
 
-	loadShader(&computeShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/compute.shader");
-	compileShader(computeShaderID, computeShader);
+	//loadShader(&computeShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/compute.shader");
+	//compileShader(computeShaderID, computeShader);
 
 	csProgramID = glCreateProgram();
 
@@ -210,7 +261,7 @@ int main(void)
 	glDeleteShader(computeShaderID);
 
 
-	/* ----- Vertex shaders and Fragments shaders ----- #1#
+	/* ----- Vertex shaders and Fragments shaders ----- #1# */
 
 	GLuint vertexShaderID;
 	GLuint fragmentShaderID;
@@ -226,11 +277,11 @@ int main(void)
 	vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-	loadShader(&vertexShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/vertex.shader");
-	loadShader(&fragmentShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/fragment.shader");
+	//loadShader(&vertexShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/vertex.shader");
+	//loadShader(&fragmentShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/fragment.shader");
 
-	compileShader(vertexShaderID, vertexShader);
-	compileShader(fragmentShaderID, fragmentShader);
+	//compileShader(vertexShaderID, vertexShader);
+	//compileShader(fragmentShaderID, fragmentShader);
 
 	programID = glCreateProgram();
 
@@ -249,7 +300,7 @@ int main(void)
 	if (strlen(ProgramErrorMessage) != 0)
 		std::cout << ProgramErrorMessage << "\n";
 
-	/* ----- Run Compute shader ----- #1#
+	/* ----- Run Compute shader ----- #1# */
 	glUseProgram(csProgramID);
 	glBindTexture(GL_TEXTURE_2D, quadTextureID);
 	glBindImageTexture(0, quadTextureID, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -260,8 +311,8 @@ int main(void)
 	glUseProgram(0);
 
 
-	/* ----- Render loop ----- #1#
-	while (!glfwWindowShouldClose(window)) {
+	/* ----- Render loop ----- #1# */
+	while (true) {
 
 		glfwPollEvents();
 
@@ -273,7 +324,7 @@ int main(void)
 
 		glEnable(GL_CULL_FACE);
 
-		/* ----- Actual render ----- #1#
+		/* ----- Actual render ----- #1# */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(programID);
@@ -292,8 +343,8 @@ int main(void)
 
 		glUseProgram(0);
 
-		glfwSwapBuffers(window);
-	}*/
+		_window.SwapBuffer();
+	}
 
 	return 0;
 

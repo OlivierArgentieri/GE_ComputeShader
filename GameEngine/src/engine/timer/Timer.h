@@ -17,7 +17,7 @@ public:
 
 private:
     const static int FPS = 60;
-    const static int frameDelay = 1000 / FPS;
+    const static int FRAME_DELAY = 1000 / FPS;
     const unsigned int MAX_DT = 50;
 
     // Time in ms when frame starts

@@ -19,7 +19,11 @@ public:
     void ClearBuffer();
     void SwapBuffer();
     void Clean();
-
+    bool WindowShouldClose();
+	
+    void UpdateInputEvent();
+    void UpdateBackgroundColor(float _r, float _g, float _b, float _a);
+    GLFWwindow* GetWindow() const;
 private:
     GLFWwindow* window;
     const std::string& title;

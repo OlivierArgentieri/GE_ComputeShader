@@ -13,17 +13,19 @@ unsigned int Timer::ComputeDeltaTime()
     frameStart = glfwGetTime();
     unsigned int _dt = frameStart - lastFrame;
     _dt = std::min(_dt, MAX_DT);
-    timeSinceStart += static_cast<float>(_dt) / 1000.0f;
+    timeSinceStart += static_cast<float>(_dt) / FPS;
     lastFrame = frameStart;
     return _dt; // clamp dt
 }
 
 void Timer::DelayTime()
 {
-    frameTime = glfwGetTime() - frameStart;
-    if (frameTime < frameDelay)
+    return;
+    unsigned int _currentTime = glfwGetTime();
+    frameTime = _currentTime - frameStart;
+    if (FRAME_DELAY < frameTime)
     {
-        glfwSetTime(frameDelay - frameTime);
+    	glfwSetTime(FRAME_DELAY - frameTime);
     }
 }
 

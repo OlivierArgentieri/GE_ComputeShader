@@ -14,7 +14,6 @@ Window::Window(const std::string& _title) : title(_title), previousSeconds(0), c
 
 Window::~Window()
 {
-    glfwDestroyWindow(window);
     LOG(Info) << "Bye";
 }
 
@@ -71,6 +70,7 @@ bool Window::Init(int _width, int _height)
         return false;
     }
     LOG(Info) << "GLEW initialized";
+    LOG(Info) << "OPENGL Version : " << glGetString(GL_VERSION);
 
     // Size of the viewport 
     glViewport(0, 0, _width, _height);
@@ -169,4 +169,24 @@ void Window::SwapBuffer()
 void Window::Clean()
 {
     glfwDestroyWindow(window);
+}
+
+bool Window::WindowShouldClose()
+{
+    return glfwWindowShouldClose(window);
+}
+
+void Window::UpdateInputEvent()
+{
+    glfwPollEvents();
+}
+
+void Window::UpdateBackgroundColor(float _r, float _g, float _b, float _a)
+{
+    glClearColor(_r, _g, _b, _a);
+}
+
+GLFWwindow* Window::GetWindow() const
+{
+    return window;
 }
