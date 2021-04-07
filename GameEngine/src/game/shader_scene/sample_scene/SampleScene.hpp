@@ -19,12 +19,13 @@ class SampleScene : public ShaderScene
 	
 public:
 	
-	SampleScene();
-	SampleScene(const SampleScene& _sampleScene) = delete;
+	SampleScene() = default;
+	SampleScene(const SampleScene&) = delete;
 
 	void Init() override;
 	void Update() override;
 	void Clean() override;
+	string GetName() override;
 
 private:
 	GLuint quadIBO;

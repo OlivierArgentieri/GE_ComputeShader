@@ -5,6 +5,7 @@
 
 #include "SampleScene.hpp"
 #include "Shader.h"
+#include "obj_scene/ObjScene.hpp"
 
 using std::vector;
 
@@ -50,4 +51,5 @@ public:
 private:
     /* === load shader scene objects ===*/
     SampleScene sampleScene;
+    ObjScene objScene;
 };

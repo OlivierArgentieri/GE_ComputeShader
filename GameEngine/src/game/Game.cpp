@@ -1,6 +1,8 @@
 #include "Game.h"
 
 
+
+#include "imgui.h"
 #include "Texture.h"
 #include "../engine/loaders/obj/obj_loader.h"
 
@@ -18,22 +20,15 @@ void Game::Init(int _screenWidth, int _screenHeight)
     isRunning = true;
 
     RegisterShaderScene(&sampleScene);
+	RegisterShaderScene(&objScene);
 }
 
 void Game::Load()
 {
-    // test load obj
-    /**/
-	std::vector< glm::vec3 > vertices;
-    std::vector< glm::vec2 > uvs;
-    std::vector< glm::vec3 > normals; // Won't be used at the moment.
-    bool res = loadOBJ("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/cube.obj", vertices, uvs, normals);
-
     for (auto& shader_scene : shaderScenes)
     {
 	    shader_scene->Init();
-    }
-	
+    }	
 }
 
 
@@ -67,7 +62,15 @@ void Game::Update(float _dt)
 {
 	for (auto&& shader_scene : shaderScenes)
 	{
-        shader_scene->Update();
+        ImGui::Begin(shader_scene->GetName().c_str());
+        {
+            string _childName = shader_scene->GetName() + "_render";
+            ImGui::BeginChild(_childName.c_str());
+            {
+				shader_scene->Update();
+            } ImGui::EndChild();
+
+        }ImGui::End();
 	}
 	
     int matrixLocation = glGetUniformLocation(shader.GetProgramID(), "matrix");

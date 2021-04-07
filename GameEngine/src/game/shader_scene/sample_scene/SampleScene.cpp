@@ -5,11 +5,6 @@
 // from https://zestedesavoir.com/tutoriels/1554/introduction-aux-compute-shaders/
 // to test this OpenGL environments 
 
-SampleScene::SampleScene()
-{
-	name = "Sample shader Scene";
-}
-
 void SampleScene::Init()
 {
 	/* ----- Quad Context ----- #1#*/
@@ -135,22 +130,20 @@ void SampleScene::Update()
 	//glBindTexture(GL_TEXTURE_2D, quadTextureID);
 
 	//glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, (GLvoid*)0);
-	ImGui::Begin(name.c_str());
-	{
-		string _childName = name + "_render";
-		ImGui::BeginChild(_childName.c_str());
-		{
-			ImVec2 wsize = ImGui::GetWindowSize();
-			ImGui::Image(reinterpret_cast<ImTextureID>(quadTextureID), wsize, ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::EndChild();
+	
+	
+	ImVec2 wsize = ImGui::GetWindowSize();
+	ImGui::Image(reinterpret_cast<ImTextureID>(quadTextureID), wsize, ImVec2(0, 1), ImVec2(1, 0));
 
-			ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		}
-		ImGui::End();
-	}
+	ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }
 
 void SampleScene::Clean()
 {
+}
+
+string SampleScene::GetName()
+{
+	return "Sample shader Scene";
 }

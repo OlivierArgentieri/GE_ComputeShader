@@ -50,7 +50,6 @@ int main(void)
 		_window.ClearBuffer();
 		_window.NewImGUIFrame();
 
-		// one window
 		ImGui::BeginMainMenuBar();
 		ImGui::Text("shader tests");
 		ImGui::EndMainMenuBar();
