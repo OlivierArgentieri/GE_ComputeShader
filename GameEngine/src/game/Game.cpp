@@ -64,7 +64,7 @@ void Game::Update(float _dt)
     matrix[12] = speed * _dt + lastPosition;
     lastPosition = matrix[12];
     shader.Use();
-    int matrixLocation = glGetUniformLocation(shader.programId, "matrix");
+    int matrixLocation = glGetUniformLocation(shader.GetProgramID(), "matrix");
     glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, matrix);
 }
 

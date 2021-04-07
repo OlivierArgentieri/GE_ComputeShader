@@ -4,66 +4,61 @@ Shader::Shader() {}
 
 Shader::~Shader() {}
 
-void Shader::CompileVertexShader()
-{
-    // === Vertex and Fragment shaders ===
-    std::string _fileVertexShader;
-    std::ifstream _vertexShaderFile(
-	    R"(D:\Projet\PullGithub\IntroductionToShadersAndOpenGL_Artfx\IntroductionToShadersAndOpenGL\5_Refactoring\build\assets\test.vert)");
-    if (_vertexShaderFile.is_open())
-    {
-        std::string _line;
-        while (std::getline(_vertexShaderFile, _line))
-        {
-            _fileVertexShader += (_line.c_str());
-            _fileVertexShader += "\n";
+
+void Shader::LoadShader(const char* _fileName, unsigned int _shaderType) {
+    FILE* shader = fopen(_fileName, "r");
+    shaderBuffer = new char[1280];
+    for (int i = 0; i < 1280; i++) {
+        shaderBuffer[i] = (unsigned char)fgetc(shader);
+        if (shaderBuffer[i] == EOF) {
+            shaderBuffer[i] = '\0';
+            break;
         }
     }
-    vertexShader = _fileVertexShader.c_str();
-    vs = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vs, 1, &vertexShader, NULL);
-    glCompileShader(vs);
-    CheckShaderErrors(vs, "vertex");
+    fclose(shader);
+
+    sid = glCreateShader(_shaderType);
 }
 
-void Shader::CompileFragmentShader()
+void Shader::CompileShader(char* sourcePointer) {
+    glShaderSource(sid, 1, &shaderBuffer, NULL);
+    glCompileShader(sid);
+
+    GLint Result = GL_FALSE;
+    int InfoLogLength = 1024;
+    char shaderErrorMessage[1024] = { 0 };
+
+    glGetShaderiv(sid, GL_COMPILE_STATUS, &Result);
+    glGetShaderInfoLog(sid, InfoLogLength, NULL, shaderErrorMessage);
+    
+	
+    if (strlen(shaderErrorMessage) != 0)
+        LOG(Error) << shaderErrorMessage << "\n";
+}
+
+GLuint Shader::GetProgramID() const
 {
-    std::string _filefragmentShader;
-    std::ifstream _fragmentShaderFile(
-	    R"(D:\Projet\PullGithub\IntroductionToShadersAndOpenGL_Artfx\IntroductionToShadersAndOpenGL\5_Refactoring\build\assets\test.frag)");
-    if (_fragmentShaderFile.is_open())
-    {
-        std::string _line;
-        while (std::getline(_fragmentShaderFile, _line))
-        {
-            _filefragmentShader += (_line.c_str());
-            _filefragmentShader += "\n";
-        }
-    }
-
-    fragmentShader = _filefragmentShader.c_str();
-    fs = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fs, 1, &fragmentShader, NULL);
-    glCompileShader(fs);
-    CheckShaderErrors(fs, "fragment");
+    return programId;
 }
 
-void Shader::CreateShaderProgram()
+void Shader::CreateShaderProgram(GLuint _programId)
 {
     // create program
-    programId = glCreateProgram();
-    glAttachShader(programId, fs);
-    glAttachShader(programId, vs);
+    if (_programId == -1)
+        programId = glCreateProgram();
+    else
+        programId = _programId;
+	
+    glAttachShader(programId, sid);
     glLinkProgram(programId);
-
 
     // debug shader
     int _params = -1;
-    glGetShaderiv(vs, GL_COMPILE_STATUS, &_params);
+    glGetShaderiv(sid, GL_COMPILE_STATUS, &_params);
     if (!_params)
     {
         LOG(Error) << "Could not link shader programme GL index " << programId;
-        PrintShaderInfoLog(vs);
+        PrintShaderInfoLog(sid);
     }
 
     if (!IsValid(programId))
@@ -72,8 +67,7 @@ void Shader::CreateShaderProgram()
     }
 
     // delete shader
-    glDeleteShader(vs);
-    glDeleteShader(fs);
+    glDeleteShader(sid);
 }
 
 Shader& Shader::Use()
@@ -90,7 +84,7 @@ void Shader::CheckShaderErrors(GLuint _shader, std::string _shaderType)
     if (!_params)
     {
         LOG(Error) << "GL " << _shaderType << " shader index " << _shader << " did not compile.";
-        PrintShaderInfoLog(vs);
+        PrintShaderInfoLog(sid);
     }
 }
 

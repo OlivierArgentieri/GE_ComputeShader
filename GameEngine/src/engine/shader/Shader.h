@@ -9,21 +9,19 @@ public:
     Shader();
     virtual ~Shader();
 
-    GLuint programId;
 
-    void CompileVertexShader();
-    void CompileFragmentShader();
-    void CreateShaderProgram();
-
+    void LoadShader(const char* _fileName, unsigned int _shaderType);
+    void CreateShaderProgram(GLuint _programId=-1);
+    void CompileShader(char* sourcePointer);
+    GLuint GetProgramID() const;
     // set current shader
     Shader& Use();
 
 private:
-    GLuint vs;
-    GLuint fs;
+    GLuint sid;
+    GLuint programId;
 
-    const char* vertexShader;
-    const char* fragmentShader;
+    char* shaderBuffer;
 
     void CheckShaderErrors(GLuint _shader, std::string _shaderType);
 

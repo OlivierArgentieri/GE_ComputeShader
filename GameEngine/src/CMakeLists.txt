@@ -38,6 +38,9 @@ FILE(GLOB LOG ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/log/*.*)
 # game
 FILE(GLOB GAME ${CMAKE_SOURCE_DIR}/GameEngine/src/game/*.*)
 
+# ======== loaders ========
+FILE(GLOB OBJ_LOADER ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/obj/*.*)
+
 ADD_EXECUTABLE(GameEngine
 	${ENGINE_SOURCES}
 	${ENGINE_HEADERS}
@@ -48,6 +51,7 @@ ADD_EXECUTABLE(GameEngine
 	${TIMER}
 	${WINDOW}
 	${GAME}
+	${OBJ_LOADER}
 )
 TARGET_LINK_LIBRARIES(GameEngine glfw3 opengl32 User32 Gdi32 Shell32 glew32s)
 
@@ -59,6 +63,7 @@ SOURCE_GROUP(src/engine/texture FILES ${TEXTURE})
 SOURCE_GROUP(src/engine/timer FILES ${TIMER})
 SOURCE_GROUP(src/engine/window FILES ${WINDOW})
 SOURCE_GROUP(src/engine/log FILES ${LOG})
+SOURCE_GROUP(src/engine/loaders/obj FILES ${OBJ_LOADER})
 SOURCE_GROUP(src/game/ FILES ${GAME})
 
 # Compile option

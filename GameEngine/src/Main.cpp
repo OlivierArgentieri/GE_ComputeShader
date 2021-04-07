@@ -13,6 +13,7 @@
 #include "Log.h"
 #include "Timer.h"
 #include "Window.h"
+#include "engine/loaders/obj/obj_loader.h"
 LogConfig LOG_CONFIG = {};
 
 typedef struct _COORDS_ {
@@ -28,34 +29,6 @@ typedef struct _RGBA_ {
 	GLfloat Blue;
 	GLfloat Alpha;
 } RGBAValues;
-
-void compileShader(GLuint shaderID, char* sourcePointer) {
-	glShaderSource(shaderID, 1, &sourcePointer, NULL);
-	glCompileShader(shaderID);
-
-	GLint Result = GL_FALSE;
-	int InfoLogLength = 1024;
-	char shaderErrorMessage[1024] = { 0 };
-
-	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &Result);
-
-	glGetShaderInfoLog(shaderID, InfoLogLength, NULL, shaderErrorMessage);
-	if (strlen(shaderErrorMessage) != 0)
-		std::cout << shaderErrorMessage << "\n";
-}
-
-void loadShader(char** shaderBuffer, const char* fileName) {
-	FILE* shader = fopen(fileName, "r");
-	(*shaderBuffer) = new char[1280];
-	for (int i = 0; i < 1280; i++) {
-		(*shaderBuffer)[i] = (unsigned char)fgetc(shader);
-		if ((*shaderBuffer)[i] == EOF) {
-			(*shaderBuffer)[i] = '\0';
-			break;
-		}
-	}
-	fclose(shader);
-}
 
 int main(void)
 {
@@ -78,14 +51,20 @@ int main(void)
 
 	
 	
-	// InitGame
-	 // Init Game
+	// Init Game
 	Timer _timer;
 	Game _game;
 	_game.Init(SCREEN_WIDTH, SCREEN_WIDTH);
 	_game.Load();
 
-	float _dt = 0;
+
+	// test load obj
+	std::vector< glm::vec3 > vertices;
+	std::vector< glm::vec2 > uvs;
+	std::vector< glm::vec3 > normals; // Won't be used at the moment.
+	bool res = loadOBJ("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/cube.obj", vertices, uvs, normals);
+	
+	/*float _dt = 0;
 	bool show_demo_window = true;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	while (_game.isRunning && !_window.WindowShouldClose())
@@ -106,7 +85,6 @@ int main(void)
 		glVertex2f(0.5f, -0.5f);
 		glEnd();
 		
-
 
 		// one window
 		{
@@ -129,18 +107,16 @@ int main(void)
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}
-		
+
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 		_window.ImGUIRender();
 		//_game.Render();
 		_window.SwapBuffer();
 		_timer.DelayTime();
 		_window.UpdateInputEvent();
-	}
+	}*/
 
-	_game.Clean();
-	_window.Clean();
-
-	return 0;
+	
 	
 	/* ----- Quad Context ----- #1#*/
 	RGBAValues* quadTexture = new RGBAValues[640 * 480];
@@ -228,68 +204,37 @@ int main(void)
 	glBindVertexArray(0);
 
 	/* ----- Compute Shader ----- #1# */
-
-	GLuint computeShaderID;
-	GLuint csProgramID;
+	Shader _computeShader;
 	char* computeShader = 0;
 
-	GLint Result = GL_FALSE;
-	int InfoLogLength = 1024;
-	char ProgramErrorMessage[1024] = { 0 };
 
-	computeShaderID = glCreateShader(GL_COMPUTE_SHADER);
-
-	//loadShader(&computeShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/compute.shader");
-	//compileShader(computeShaderID, computeShader);
-
-	csProgramID = glCreateProgram();
-
-	glAttachShader(csProgramID, computeShaderID);
-	glLinkProgram(csProgramID);
-	glDeleteShader(computeShaderID);
-
-
+	/**/
+	_computeShader.LoadShader("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/compute.shader", GL_COMPUTE_SHADER);
+	_computeShader.CompileShader(computeShader);
+	_computeShader.CreateShaderProgram();
+	
 	/* ----- Vertex shaders and Fragments shaders ----- #1# */
-
-	GLuint vertexShaderID;
-	GLuint fragmentShaderID;
+	Shader _vertexShader;
+	Shader _fragmentShader;
 	GLuint programID;
 
-	Result = GL_FALSE;
-	InfoLogLength = 1024;
-	memset(ProgramErrorMessage, 0, 1024);
 
 	char* vertexShader = 0;
 	char* fragmentShader = 0;
+	
+	_vertexShader.LoadShader("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/vertex.shader", GL_VERTEX_SHADER);
+	_fragmentShader.LoadShader("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/fragment.shader", GL_FRAGMENT_SHADER);
 
-	vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	_vertexShader.CompileShader(vertexShader);
+	_fragmentShader.CompileShader(fragmentShader);
 
-	//loadShader(&vertexShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/vertex.shader");
-	//loadShader(&fragmentShader, "C:/Users/olivi/Desktop/GameEngine-master/Bin/Debug/fragment.shader");
-
-	//compileShader(vertexShaderID, vertexShader);
-	//compileShader(fragmentShaderID, fragmentShader);
-
-	programID = glCreateProgram();
-
-	glAttachShader(programID, vertexShaderID);
-	glAttachShader(programID, fragmentShaderID);
-
-	glLinkProgram(programID);
-
-	glDeleteShader(vertexShaderID);
-	glDeleteShader(fragmentShaderID);
-
-	glGetProgramiv(programID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	glGetProgramInfoLog(programID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-
-	if (strlen(ProgramErrorMessage) != 0)
-		std::cout << ProgramErrorMessage << "\n";
+	_vertexShader.CreateShaderProgram();
+	programID = _vertexShader.GetProgramID();
+	_fragmentShader.CreateShaderProgram(programID);/**/
+	
 
 	/* ----- Run Compute shader ----- #1# */
-	glUseProgram(csProgramID);
+	_computeShader.Use();
 	glBindTexture(GL_TEXTURE_2D, quadTextureID);
 	glBindImageTexture(0, quadTextureID, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glDispatchCompute(40, 30, 1);
@@ -304,11 +249,7 @@ int main(void)
 
 		glfwPollEvents();
 
-#if defined(WIN32) || defined(_WIN32)
 		Sleep(40);
-#else
-		usleep(40000);
-#endif
 
 		glEnable(GL_CULL_FACE);
 
