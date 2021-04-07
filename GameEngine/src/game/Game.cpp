@@ -73,8 +73,8 @@ void Game::Update(float _dt)
         }ImGui::End();
 	}
 	
-    int matrixLocation = glGetUniformLocation(shader.GetProgramID(), "matrix");
-    glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, matrix);
+    //int matrixLocation = glGetUniformLocation(shader.GetProgramID(), "matrix");
+    //glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, matrix);
 }
 
 void Game::Render()
