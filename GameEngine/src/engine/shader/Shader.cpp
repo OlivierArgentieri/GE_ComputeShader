@@ -7,7 +7,13 @@ Shader::~Shader() {}
 
 void Shader::LoadShader(const char* _fileName, unsigned int _shaderType) {
     FILE* shader = fopen(_fileName, "r");
-    shaderBuffer = new char[1280];
+
+    if (!shader)
+    {
+        LOG(Error) << "Shader File not found ! : " << _fileName;
+        return;
+    }
+	shaderBuffer = new char[1280];
     for (int i = 0; i < 1280; i++) {
         shaderBuffer[i] = (unsigned char)fgetc(shader);
         if (shaderBuffer[i] == EOF) {

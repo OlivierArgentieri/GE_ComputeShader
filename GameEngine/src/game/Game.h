@@ -1,11 +1,9 @@
 #pragma once
-
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <memory>
 #include <vector>
 
+
+#include "SampleScene.hpp"
 #include "Shader.h"
 
 using std::vector;
@@ -13,6 +11,24 @@ using std::vector;
 // run a simple game loop
 class Game
 {
+
+private:
+    Shader shader;
+    GLuint vao;
+
+    float speed = 1.0f;
+    float lastPosition = 0.5f;
+    float matrix[16]
+    {
+        1.0f, 0.0f, 0.0f, 0.0f, // first column
+        0.0f, 1.0f, 0.0f, 0.0f, // second
+        0.0f, 0.0f, 1.0f, 0.0f, // third
+        0.5f, 0.0f, 0.0f, 1.0f // fourth
+    };
+
+    vector<ShaderScene*> shaderScenes;
+
+
 public:
     Game();
     virtual ~Game();
@@ -27,17 +43,11 @@ public:
     bool isRunning;
     int windowWidth, windowHeight;
 
-private:
-    Shader shader;
-    GLuint vao;
+	/* register shader scene objects */
+    void RegisterShaderScene(ShaderScene* _shaderScene);
+    void UnregisterShaderScene(ShaderScene* _shaderScene);
 
-    float speed = 1.0f;
-    float lastPosition = 0.5f;
-    float matrix[16]
-    {
-        1.0f, 0.0f, 0.0f, 0.0f, // first coloumn
-        0.0f, 1.0f, 0.0f, 0.0f, // second
-        0.0f, 0.0f, 1.0f, 0.0f, // third
-        0.5f, 0.0f, 0.0f, 1.0f // fourth
-    };
+private:
+    /* === load shader scene objects ===*/
+    SampleScene sampleScene;
 };

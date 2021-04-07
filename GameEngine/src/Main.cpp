@@ -1,22 +1,10 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
 #include "ImGUI/imgui.h"
-
-// custom glfw window
-
-#include <iostream>
-#include <Windows.h>
-
 
 #include "Game.h"
 #include "Log.h"
-#include "SampleScene.hpp"
-#include "ShaderScene.hpp"
 #include "Timer.h"
 #include "Window.h"
 
-#include "engine/loaders/obj/obj_loader.h"
 LogConfig LOG_CONFIG = {};
 
 
@@ -45,17 +33,8 @@ int main(void)
 	_game.Load();
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-
-
-	/* === load shader scene objects ===*/
-	SampleScene _sampleScene("SampleScene");
-
-	ShaderScene* _currentScene = &_sampleScene;
-
 	
 	/* ----- Render loop ----- #1# */
-	_currentScene->Init();
 	float _dt;
 	while (_game.isRunning && !_window.WindowShouldClose())
 	{
@@ -66,29 +45,24 @@ int main(void)
 		_window.UpdateBackgroundColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 
 		//_game.HandleInputs();
-		//_game.Update(_dt);
+		
 
 		_window.ClearBuffer();
 		_window.NewImGUIFrame();
 
 		// one window
 		ImGui::BeginMainMenuBar();
-
-		/* render scene here */
-		_currentScene->Update();
-
-		
 		ImGui::Text("shader tests");
 		ImGui::EndMainMenuBar();
-		
-		
-	
+
+		/* render scene here */
+		_game.Update(_dt);
 		
 		_window.ImGUIRender();
 		//_game.Render();
 		_window.SwapBuffer();
 		_timer.DelayTime();
 	}
-	_currentScene->Clear();
+	
 	return 0;
 }

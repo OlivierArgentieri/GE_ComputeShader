@@ -2,9 +2,12 @@
 
 #include "imgui.h"
 
-SampleScene::SampleScene(string _name)
+// from https://zestedesavoir.com/tutoriels/1554/introduction-aux-compute-shaders/
+// to test this OpenGL environments 
+
+SampleScene::SampleScene()
 {
-	name = std::move(_name);
+	name = "Sample shader Scene";
 }
 
 void SampleScene::Init()
@@ -38,9 +41,6 @@ void SampleScene::Init()
 	quadVertex[2].t = 0.0f;
 	quadVertex[3].s = 1.0f;
 	quadVertex[3].t = 1.0f;
-
-
-	/* ----- Render Context ----- #1#*/
 
 	
 
@@ -85,23 +85,20 @@ void SampleScene::Init()
 	Shader _computeShader;
 	char* computeShader = 0;
 
-
-	/**/
-	_computeShader.LoadShader("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/compute.shader", GL_COMPUTE_SHADER);
+	_computeShader.LoadShader("assets/sample/compute.shader", GL_COMPUTE_SHADER);
 	_computeShader.CompileShader(computeShader);
 	_computeShader.CreateShaderProgram();
 
-	/* ----- Vertex shaders and Fragments shaders ----- #1# */
+	/* ----- Vertex shaders and Fragments shaders -----  */
 	Shader _vertexShader;
 	Shader _fragmentShader;
 	
 
-
 	char* vertexShader = 0;
 	char* fragmentShader = 0;
 
-	_vertexShader.LoadShader("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/vertex.shader", GL_VERTEX_SHADER);
-	_fragmentShader.LoadShader("D:/Projet/PullGithub/GE_CustomShader/Bin/Debug/fragment.shader", GL_FRAGMENT_SHADER);
+	_vertexShader.LoadShader("assets/sample/vertex.shader", GL_VERTEX_SHADER);
+	_fragmentShader.LoadShader("assets/sample/fragment.shader", GL_FRAGMENT_SHADER);
 
 	_vertexShader.CompileShader(vertexShader);
 	_fragmentShader.CompileShader(fragmentShader);
@@ -131,8 +128,6 @@ void SampleScene::Update()
 	glVertex2f(0.5f, -0.5f);
 	glEnd();
 
-
-
 	glUseProgram(programID);
 	glBindVertexArray(quadVAO);
 
@@ -140,15 +135,14 @@ void SampleScene::Update()
 	//glBindTexture(GL_TEXTURE_2D, quadTextureID);
 
 	//glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, (GLvoid*)0);
-	ImGui::Begin(name.c_str()); // this will be on shader scene
+	ImGui::Begin(name.c_str());
 	{
 		string _childName = name + "_render";
 		ImGui::BeginChild(_childName.c_str());
 		{
 			ImVec2 wsize = ImGui::GetWindowSize();
-			ImGui::Image((ImTextureID)quadTextureID, wsize, ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image(reinterpret_cast<ImTextureID>(quadTextureID), wsize, ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::EndChild();
-			// Create a window called "Hello, world!" and append into it.
 
 			ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -157,6 +151,6 @@ void SampleScene::Update()
 	}
 }
 
-void SampleScene::Clear()
+void SampleScene::Clean()
 {
 }

@@ -10,6 +10,5 @@ INCLUDE_DIRECTORIES (
 	${CMAKE_SOURCE_DIR}/Include
 	
 )
-
 # Subdirectories
 ADD_SUBDIRECTORY(GameEngine/src)
