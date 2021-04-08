@@ -18,13 +18,14 @@ private:
 
 	GLuint vertexbuffer;
 	GLuint uvbuffer;
+	GLuint matrixID;
 
 public:
 	ObjScene() = default;
 	ObjScene(const ObjScene&) = delete;
 
 	void Init() override;
-	void Update() override;
+	void Update(float _dt, glm::mat4 _mvp) override;
 	void Clean() override;
 	string GetName() override;
 };

@@ -63,7 +63,7 @@ bool Window::Init(int _width, int _height)
     if (!InitImGUI()) return false;
 	
     // Size of the viewport 
-    glViewport(0, 0, _width, _height);
+    //glViewport(0, 0, _width, _height);
 
     // Enable transparency
     glEnable(GL_BLEND);
@@ -79,15 +79,21 @@ bool Window::Init(int _width, int _height)
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, GL_TRUE);
     }
 
+    glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
+
     // Enable cull face optimization
     glEnable(GL_CULL_FACE); // cull face
     glCullFace(GL_BACK); // cull back face
     glFrontFace(GL_CCW); // GL_CCW for Counter Clock-Wise
-
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glfwSetCursorPos(window, _width / 2, _height / 2);
     // Window color
-    glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 
-	
+    // Ensure we can capture the escape key being pressed below
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    // Hide the mouse and enable unlimited mouvement
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     return true;
 }
 
@@ -190,6 +196,11 @@ void Window::ImGUIRender()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+bool Window::CloseWindow()
+{
+    return glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0;
+}
+
 GLFWwindow* Window::GetWindow() const
 {
     return window;
@@ -207,9 +218,10 @@ bool Window::InitGLFW()
     }
     LOG(Info) << "GLFW Initialized";
 
+    glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // openGL version
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	return true;
 }
 
@@ -217,6 +229,7 @@ bool Window::InitGLEW()
 {
     if (!window) return false;
     // OpenGL setup
+    glewExperimental = true;
     if (glewInit() != GLEW_OK)
     {
         LOG(Info) << "GLEW Failed !";

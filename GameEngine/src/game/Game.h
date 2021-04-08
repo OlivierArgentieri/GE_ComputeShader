@@ -1,6 +1,8 @@
 #pragma once
 #include <GL/glew.h>
 #include <vector>
+#include <ext/matrix_float4x4.hpp>
+
 
 
 #include "SampleScene.hpp"
@@ -52,4 +54,11 @@ private:
     /* === load shader scene objects ===*/
     SampleScene sampleScene;
     ObjScene objScene;
+
+	/* === compute mvp === */
+    glm::mat4 viewMatrix;
+    glm::mat4 projectionMatrix;
+    GLuint matrixID;
+    glm::mat4 mvp;
+    void computeMVP();
 };

@@ -23,7 +23,7 @@ public:
 	SampleScene(const SampleScene&) = delete;
 
 	void Init() override;
-	void Update() override;
+	void Update(float _dt, glm::mat4 _mvp) override;
 	void Clean() override;
 	string GetName() override;
 

@@ -6,14 +6,26 @@ Shader::~Shader() {}
 
 
 void Shader::LoadShader(const char* _fileName, unsigned int _shaderType) {
-    FILE* shader = fopen(_fileName, "r");
+    /*FILE* shader = fopen(_fileName, "r");
 
     if (!shader)
     {
         LOG(Error) << "Shader File not found ! : " << _fileName;
         return;
+    }*/
+    std::ifstream VertexShaderStream(_fileName, std::ios::in);
+    if (VertexShaderStream.is_open()) {
+        std::stringstream sstr;
+        sstr << VertexShaderStream.rdbuf();
+        shaderBuffer = sstr.str();
+        VertexShaderStream.close();
     }
-	shaderBuffer = new char[1280];
+    else {
+        LOG(Error) << "Shader File not found ! : " << _fileName;
+        return;
+    }
+	
+	/*shaderBuffer = new char[1280];
     for (int i = 0; i < 1280; i++) {
         shaderBuffer[i] = (unsigned char)fgetc(shader);
         if (shaderBuffer[i] == EOF) {
@@ -21,13 +33,14 @@ void Shader::LoadShader(const char* _fileName, unsigned int _shaderType) {
             break;
         }
     }
-    fclose(shader);
+    fclose(shader);*/
 
     sid = glCreateShader(_shaderType);
 }
 
 void Shader::CompileShader(char* sourcePointer) {
-    glShaderSource(sid, 1, &shaderBuffer, NULL);
+    char const * _shaderBufferPointer = shaderBuffer.c_str();
+    glShaderSource(sid, 1, &_shaderBufferPointer, NULL);
     glCompileShader(sid);
 
     GLint Result = GL_FALSE;

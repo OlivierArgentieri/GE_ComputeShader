@@ -6,6 +6,7 @@ void ObjScene::Init()
 {
 	// test load obj
 	glDepthFunc(GL_LESS);
+
 	
 	bool res = loadOBJ("assets/obj/cube.obj", vertices, uvs, normals);
 
@@ -28,6 +29,10 @@ void ObjScene::Init()
 
 	framgentShader.CreateShaderProgram(programID); // same program for both shader
 
+	matrixID = glGetUniformLocation(programID, "MVP");
+	/* Texture */
+	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	
 	/* make buffer for obj */
 	
 	glGenBuffers(1, &vertexbuffer);
@@ -41,10 +46,12 @@ void ObjScene::Init()
 	
 }
 
-void ObjScene::Update()
+void ObjScene::Update(float _dt, glm::mat4 _mvp)
 {
-	framgentShader.Use(); // todo static method
-
+	//framgentShader.Use(); // todo static method
+	glUseProgram(programID);
+	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
+	
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -58,7 +65,7 @@ void ObjScene::Update()
 	);
 
 	// 2nd attribute buffer : UVs
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glVertexAttribPointer(
 		1,                                // attribute
@@ -68,6 +75,10 @@ void ObjScene::Update()
 		0,                                // stride
 		(void*)0                          // array buffer offset
 	);
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
 void ObjScene::Clean()

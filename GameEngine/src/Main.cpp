@@ -10,8 +10,8 @@ LogConfig LOG_CONFIG = {};
 
 int main(void)
 {
-	const int SCREEN_WIDTH = 1600;
-	const int SCREEN_HEIGHT = 1280;
+	const int SCREEN_WIDTH = 1024;
+	const int SCREEN_HEIGHT = 768;
 
 	// Init Logging
 	// Log init
@@ -33,18 +33,20 @@ int main(void)
 	_game.Load();
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	
+
 	
 	/* ----- Render loop ----- #1# */
 	float _dt;
-	while (_game.isRunning && !_window.WindowShouldClose())
+	while (_game.isRunning)
 	{
-		_window.UpdateInputEvent();
 		
 		_dt = static_cast<float>(_timer.ComputeDeltaTime());
 		_window.UpdateFpsCounter(_dt);
 		_window.UpdateBackgroundColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 
-		//_game.HandleInputs();
+		_game.HandleInputs();
 		
 
 		_window.ClearBuffer();
@@ -58,8 +60,10 @@ int main(void)
 		_game.Update(_dt);
 		
 		_window.ImGUIRender();
-		//_game.Render();
+		_game.Render();
 		_window.SwapBuffer();
+		_window.UpdateInputEvent();
+		_game.isRunning = _window.CloseWindow();
 		_timer.DelayTime();
 	}
 	

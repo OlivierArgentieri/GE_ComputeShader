@@ -21,7 +21,7 @@ private:
     GLuint sid;
     GLuint programId;
 
-    char* shaderBuffer;
+    std::string shaderBuffer;
 
     void CheckShaderErrors(GLuint _shader, std::string _shaderType);
 

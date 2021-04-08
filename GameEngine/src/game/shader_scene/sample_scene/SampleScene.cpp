@@ -114,7 +114,7 @@ void SampleScene::Init()
 	glUseProgram(0);
 }
 
-void SampleScene::Update()
+void SampleScene::Update(float _dt, glm::mat4 _mvp)
 {
 
 	glBegin(GL_TRIANGLES);

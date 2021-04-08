@@ -26,7 +26,10 @@ public:
 
     void NewImGUIFrame();
     void ImGUIRender();
-    GLFWwindow* GetWindow() const;
+    bool CloseWindow();
+
+	GLFWwindow* GetWindow() const;
+
 private:
     bool InitGLFW();
     bool InitGLEW();
