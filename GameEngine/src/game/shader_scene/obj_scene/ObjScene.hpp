@@ -8,7 +8,7 @@
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
 
-class ObjScene : public ShaderScene
+class ObjScene : public ShaderScene, RenderView
 {
 private:
 	std::vector< glm::vec3 > vertices;
@@ -27,14 +27,14 @@ private:
 
 	/* mvp for shader */
 	GLuint matrixID;
-
-	RenderView rv;
 	
 public:
 	ObjScene(Game* _game);
 	ObjScene(const ObjScene&) = delete;
 
 	void Init() override;
+	void ReloadVertexShader();
+	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
 	void Update(float _dt, glm::mat4 _mvp) override;
 	void NotUpdate(float _dt, glm::mat4 _mvp);
 	void Clean() override;

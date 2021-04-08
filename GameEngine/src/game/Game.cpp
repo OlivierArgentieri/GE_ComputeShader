@@ -3,13 +3,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-
-#include "imgui.h"
 #include "RenderView.hpp"
-#include "Texture.h"
 #include "../engine/loaders/obj/ObjLoader.hpp"
 
-Game::Game() : isRunning(false), windowWidth(0), windowHeight(0), objScene(this), sampleScene(this)
+
+Game::Game() : isRunning(false), windowWidth(0), windowHeight(0),  objScene(this)
 {
 }
 
@@ -40,20 +38,12 @@ void Game::HandleInputs()
 
 void Game::Update(float _dt)
 {
-	for (auto&& shader_scene : shaderScenes)
-	{
+    for (auto&& shader_scene : shaderScenes)
+    {
         computeMVP(shader_scene->GetTransform().GetModelMatrix()); // compute with object model matrix, here is scene
-		
-        ImGui::Begin(shader_scene->GetName().c_str());
-        {
-            string _childName = shader_scene->GetName() + "_render";
-            ImGui::BeginChild(_childName.c_str());
-            {
-                shader_scene->Update(_dt, mvp);
-            	
-            } ImGui::EndChild();
-        }ImGui::End();
-	}
+
+        shader_scene->Update(_dt, mvp);
+    }
 
 }
 

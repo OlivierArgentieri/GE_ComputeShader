@@ -1,7 +1,8 @@
 #pragma once
+#include "RenderView.hpp"
 #include "ShaderScene.hpp"
 
-class SampleScene : public ShaderScene
+class SampleScene : public ShaderScene, RenderView
 {
 	typedef struct _COORDS_ {
 		GLfloat x;
@@ -35,4 +36,6 @@ private:
 
 	// vertex - fragment shader pid
 	GLuint programID;
+
+	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
 };

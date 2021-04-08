@@ -15,9 +15,6 @@ protected:
 	Shader shader;
 	Transform transform;
 
-	/** create fbo */
-	FrameBufferObject fbo;
-
 	Game* game;
 
 	ShaderScene(Game* _game);

@@ -31,8 +31,6 @@ int main(void)
 		return 1;
 	}
 
-	
-	
 
 	// Init Game
 	Timer _timer;
@@ -59,9 +57,13 @@ int main(void)
 		_window.ClearBuffer();
 		_window.NewImGUIFrame();
 
+		bool open = false;
+		
+		
 		ImGui::BeginMainMenuBar();
 		ImGui::Text("shader tests");
 		ImGui::EndMainMenuBar();
+
 
 		/* render scene here */
 		_game.Update(_dt);

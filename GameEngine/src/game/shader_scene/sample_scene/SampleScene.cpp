@@ -82,25 +82,21 @@ void SampleScene::Init()
 
 	/* ----- Compute Shader ----- #1# */
 	Shader _computeShader;
-	char* computeShader = 0;
 
 	_computeShader.LoadShader("assets/sample/compute.shader", GL_COMPUTE_SHADER);
-	_computeShader.CompileShader(computeShader);
+	_computeShader.CompileShader();
 	_computeShader.CreateShaderProgram();
 
 	/* ----- Vertex shaders and Fragments shaders -----  */
 	Shader _vertexShader;
 	Shader _fragmentShader;
-	
 
-	char* vertexShader = 0;
-	char* fragmentShader = 0;
 
 	_vertexShader.LoadShader("assets/sample/vertex.shader", GL_VERTEX_SHADER);
 	_fragmentShader.LoadShader("assets/sample/fragment.shader", GL_FRAGMENT_SHADER);
 
-	_vertexShader.CompileShader(vertexShader);
-	_fragmentShader.CompileShader(fragmentShader);
+	_vertexShader.CompileShader();
+	_fragmentShader.CompileShader();
 
 	_vertexShader.CreateShaderProgram();
 	programID = _vertexShader.GetProgramID();
@@ -120,25 +116,8 @@ void SampleScene::Init()
 
 void SampleScene::Update(float _dt, glm::mat4 _mvp)
 {
-	
-	glBegin(GL_TRIANGLES);
-	glVertex2f(-0.5f, -0.5f);
-	glVertex2f(0.0f, 0.5f);
-	glVertex2f(0.5f, -0.5f);
-	glEnd();
-	glUseProgram(programID);
-	glBindVertexArray(quadVAO);
+	Render(_dt, _mvp, GetName().c_str());
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, quadTextureID);
-
-	//glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-	ImVec2 wsize = ImGui::GetWindowSize();
-	ImGui::Image(reinterpret_cast<ImTextureID>(quadTextureID), wsize, ImVec2(0, 1), ImVec2(1, 0));
-
-	ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }
 
 void SampleScene::Clean()
@@ -147,5 +126,33 @@ void SampleScene::Clean()
 
 string SampleScene::GetName()
 {
-	return "Sample shader Scene";
+	return "Sample_shader_Scene";
+}
+
+void SampleScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
+{
+	glBegin(GL_TRIANGLES);
+	glVertex2f(-0.5f, -0.5f);
+	glVertex2f(0.0f, 0.5f);
+	glVertex2f(0.5f, -0.5f);
+	glEnd();
+
+	glUseProgram(programID);
+	glBindVertexArray(quadVAO);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, quadTextureID);
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, (GLvoid*)0);
+
+	//ImVec2 wsize = ImGui::GetWindowSize();
+	//ImGui::Image(reinterpret_cast<ImTextureID>(quadTextureID), wsize, ImVec2(0, 1), ImVec2(1, 0));
+
+	//ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
+	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(0);
+
+	glBindVertexArray(0);
+
+	glUseProgram(0);
 }

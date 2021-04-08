@@ -19,16 +19,13 @@ void ObjScene::Init()
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-	
-	char* _vertexShaderBuffer = 0;
-	char* _fragmentShaderBuffer = 0;
-	
+
 	/**/
 	vertexShader.LoadShader("assets/obj/TransformVertexShader.vertexshader", GL_VERTEX_SHADER);
 	framgentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
 	
-	vertexShader.CompileShader(_vertexShaderBuffer);
-	framgentShader.CompileShader(_fragmentShaderBuffer);
+	vertexShader.CompileShader();
+	framgentShader.CompileShader();
 
 	vertexShader.CreateShaderProgram();
 
@@ -41,7 +38,7 @@ void ObjScene::Init()
 
 	/* Texture */
 	// Load the texture
-	DdsLoader::LoadFile("assets/obj/uvmap.dds", texture);
+	DdsLoader::LoadFile("assets/obj/uvChecker.dds", texture);
 
 	// Get a handle for our "myTextureSampler" uniform
 	textureID = glGetUniformLocation(programID, "myTextureSampler");
@@ -58,59 +55,72 @@ void ObjScene::Init()
 
 }
 
-void ObjScene::Update(float _dt, glm::mat4 _mvp)
+void ObjScene::ReloadVertexShader()
 {
-	GLuint _fboTextureID = fbo.CreateRenderTexture();
+	/*glDetachShader(vertexShader.GetProgramID(), vertexShader.GetShaderID());
+	glDetachShader(framgentShader.GetProgramID(), framgentShader.GetShaderID());
+	glDeleteShader(vertexShader.GetShaderID());
+	glDeleteShader(framgentShader.GetShaderID());*/
+	
+	//vertexShader.LoadShader("assets/obj/TransformVertexShader.vertexshader", GL_VERTEX_SHADER);
+	//framgentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
+
+	vertexShader.CompileShader();
+	framgentShader.CompileShader();
+
+	vertexShader.CreateShaderProgram();
+
+	programID = vertexShader.GetProgramID();
+
+	framgentShader.CreateShaderProgram(programID); // same program for both shader
+	LOG(Info) << "OK";
+
+}
+
+void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
+{
 	//framgentShader.Use(); // todo static method
 	glUseProgram(programID);
 
-	// Send our transformation to the currently bound shader, 
-	// in the "MVP" uniform
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
-
-	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	
-	// Set our "myTextureSampler" sampler to use Texture Unit 0
 	glUniform1i(textureID, 0);
 
-	
+
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glVertexAttribPointer(
-		0,                  // attribute
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	// 2nd attribute buffer : UVs
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glVertexAttribPointer(
-		1,                                // attribute
-		2,                                // size
-		GL_FLOAT,                         // type
-		GL_FALSE,                         // normalized?
-		0,                                // stride
-		(void*)0                          // array buffer offset
-	);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,(void*)0);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-	fbo.EndFBO();
-	
-	ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-	ImVec2 wsize = ImGui::GetWindowSize();
-	ImGui::Image(reinterpret_cast<ImTextureID>(_fboTextureID), wsize, ImVec2(0, 1), ImVec2(1, 0));
+	//ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
+	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
+
+	ImGui::Begin("Settings");
+	if(ImGui::Button("Reload Shaders "))
+	{
+		ReloadVertexShader();
+	}
+
+	char* str1 = &vertexShader.shaderBuffer[0];
 	
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	ImGui::InputTextMultiline("vertexShader", str1, vertexShader.shaderBuffer.length()*2, ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
+	ImGui::End(); 
+	
+	
+}
+
+void ObjScene::Update(float _dt, glm::mat4 _mvp)
+{
+	Render(_dt, _mvp, GetName().c_str());
 }
 
 

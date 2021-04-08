@@ -38,7 +38,10 @@ void Shader::LoadShader(const char* _fileName, unsigned int _shaderType) {
     sid = glCreateShader(_shaderType);
 }
 
-void Shader::CompileShader(char* sourcePointer) {
+
+
+
+void Shader::CompileShader() {
     char const * _shaderBufferPointer = shaderBuffer.c_str();
     glShaderSource(sid, 1, &_shaderBufferPointer, NULL);
     glCompileShader(sid);

@@ -52,8 +52,9 @@ public:
 
 private:
     /* === load shader scene objects ===*/
-    SampleScene sampleScene;
     ObjScene objScene;
+
+    //SampleScene sampleScene;
 
 	/* === compute mvp === */
     glm::mat4 viewMatrix;
@@ -61,7 +62,4 @@ private:
     GLuint matrixID;
     glm::mat4 mvp;
     void computeMVP(glm::mat4 _objectModelMatrix);
-
-	/* === FBO Object === */
-   
 };

@@ -14,16 +14,17 @@ public:
 
     void LoadShader(const char* _fileName, unsigned int _shaderType);
     void CreateShaderProgram(GLuint _programId=-1);
-    void CompileShader(char* sourcePointer);
+    void CompileShader();
     GLuint GetProgramID() const;
+    GLuint GetShaderID() const { return sid; }
     // set current shader
     Shader& Use();
+    std::string shaderBuffer;
 
 private:
     GLuint sid;
     GLuint programId;
 
-    std::string shaderBuffer;
 
     void CheckShaderErrors(GLuint _shader, std::string _shaderType);
 
