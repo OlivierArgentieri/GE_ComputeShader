@@ -45,7 +45,7 @@ bool Window::Init(int _width, int _height)
 {
     
     if (!InitGLFW()) return false;
-	
+    
     window = glfwCreateWindow(_width, _height, title.c_str(), nullptr, nullptr);
     if (!window)
     {
@@ -67,7 +67,6 @@ bool Window::Init(int _width, int _height)
 
     // Enable transparency
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
     // OpenGL error callback
@@ -78,15 +77,15 @@ bool Window::Init(int _width, int _height)
         GLuint unusedIds = 0;
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, GL_TRUE);
     }
-
     glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 
-    // Enable cull face optimization
-    glEnable(GL_CULL_FACE); // cull face
-    glCullFace(GL_BACK); // cull back face
-    glFrontFace(GL_CCW); // GL_CCW for Counter Clock-Wise
+    // Enable depth test
     glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
+
+    // Cull triangles which normal is not towards the camera
+    glEnable(GL_CULL_FACE);
     glfwSetCursorPos(window, _width / 2, _height / 2);
     // Window color
 
@@ -219,8 +218,9 @@ bool Window::InitGLFW()
     LOG(Info) << "GLFW Initialized";
 
     glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // openGL version
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	return true;
 }

@@ -4,24 +4,13 @@
 in vec2 UV;
 
 // Ouput data
-out vec4 finalColor;
+out vec3 color;
 
-
-// Bindable data in cpp 
+// Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
-uniform bool isTextureLoaded = false;
-uniform vec3 color;
 
 void main(){
-	// Output color = color of the texture at the specified UV
-	color.r = 1;
-	color.g = 1;
-	color.b = 1;
-	
-	if(isTextureLoaded)
-		finalColor.rgb = color.rgb * texture( myTextureSampler, UV ).rgb;
-	else
-		finalColor.rgb = color;
 
-	finalColor.a = 0.5f;
+	// Output color = color of the texture at the specified UV
+	color = texture( myTextureSampler, UV ).rgb;
 }

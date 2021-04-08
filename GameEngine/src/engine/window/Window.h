@@ -29,13 +29,13 @@ public:
     bool CloseWindow();
 
 	GLFWwindow* GetWindow() const;
+    GLFWwindow* window;
 
 private:
     bool InitGLFW();
     bool InitGLEW();
     bool InitImGUI();
 	
-    GLFWwindow* window;
     const std::string& title;
 
     // Delete

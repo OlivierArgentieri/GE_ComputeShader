@@ -1,15 +1,21 @@
+
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "DdsLoader.hpp"
 #include "ImGUI/imgui.h"
 
 #include "Game.h"
 #include "Log.h"
+#include "obj_loader.h"
 #include "Timer.h"
 #include "Window.h"
 
 LogConfig LOG_CONFIG = {};
 
-
+//GLFWwindow* window;
 int main(void)
 {
+	// Initialise GLFW
 	const int SCREEN_WIDTH = 1024;
 	const int SCREEN_HEIGHT = 768;
 
@@ -18,13 +24,16 @@ int main(void)
 	LOG_CONFIG.reporting_level = Debug;
 	LOG_CONFIG.restart = true;
 	if (LOG_CONFIG.restart) { Log::restart(); }
-	
+
 	// Init Window
 	/**/Window _window = Window("openGL window");
 	if (!_window.Init(SCREEN_WIDTH, SCREEN_HEIGHT))
 	{
 		return 1;
 	}
+
+	
+	
 
 	// Init Game
 	Timer _timer;
@@ -57,7 +66,7 @@ int main(void)
 
 		/* render scene here */
 		_game.Update(_dt);
-		
+
 		_window.ImGUIRender();
 		_game.Render();
 		_window.SwapBuffer();

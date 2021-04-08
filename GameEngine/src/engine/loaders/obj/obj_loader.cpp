@@ -34,13 +34,13 @@ bool loadOBJ(
 
 
 	FILE* file = fopen(path, "r");
-	if (file == nullptr) {
-		printf("Unable to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
+	if (file == NULL) {
+		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
 		getchar();
 		return false;
 	}
 
-	while (true) {
+	while (1) {
 
 		char lineHeader[128];
 		// read the first word of the line
@@ -52,18 +52,18 @@ bool loadOBJ(
 
 		if (strcmp(lineHeader, "v") == 0) {
 			glm::vec3 vertex;
-			fscanf_s(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
 		}
 		else if (strcmp(lineHeader, "vt") == 0) {
 			glm::vec2 uv;
-			fscanf_s(file, "%f %f\n", &uv.x, &uv.y);
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
 			uv.y = -uv.y; // Invert V coordinate since we will only use DDS texture, which are inverted. Remove if you want to use TGA or BMP loaders.
 			temp_uvs.push_back(uv);
 		}
 		else if (strcmp(lineHeader, "vn") == 0) {
 			glm::vec3 normal;
-			fscanf_s(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
 			temp_normals.push_back(normal);
 		}
 		else if (strcmp(lineHeader, "f") == 0) {
@@ -90,6 +90,7 @@ bool loadOBJ(
 			char stupidBuffer[1000];
 			fgets(stupidBuffer, 1000, file);
 		}
+
 	}
 
 	// For each vertex of each triangle
@@ -109,6 +110,7 @@ bool loadOBJ(
 		out_vertices.push_back(vertex);
 		out_uvs.push_back(uv);
 		out_normals.push_back(normal);
+
 	}
 	fclose(file);
 	return true;

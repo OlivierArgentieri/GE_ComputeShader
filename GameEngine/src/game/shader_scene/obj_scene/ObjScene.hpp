@@ -19,12 +19,18 @@ private:
 
 	GLuint vertexbuffer;
 	GLuint uvbuffer;
-
+	
+	GLuint textureID;
+	GLuint texture;
 
 	/* mvp */
 	GLuint matrixID;
 	glm::mat4 mvp;
+
 	
+	unsigned int fbo;
+	unsigned int texColorBuffer;
+	GLuint depthrenderbuffer;
 public:
 	ObjScene() = default;
 	ObjScene(const ObjScene&) = delete;

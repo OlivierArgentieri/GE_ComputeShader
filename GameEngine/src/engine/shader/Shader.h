@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Log.h"
 #include <GL/glew.h>
 

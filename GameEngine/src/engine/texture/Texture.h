@@ -13,12 +13,12 @@ private:
     unsigned char* data;
 
 public:
-
     Texture();
     ~Texture();
 
     void Unload();
     bool Load(const string& _filename);
+    bool LoadDds(const string& _filename);
     void UpdateInfo(int& _widthOut, int& _heightOut);
     void Use() const;
 

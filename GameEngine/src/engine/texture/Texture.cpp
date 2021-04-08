@@ -16,6 +16,7 @@ void Texture::Unload()
 
 bool Texture::Load(const string& _filenameP)
 {
+	
     filename = _filenameP;
     FILE* _file;
     unsigned char header[54];
@@ -82,6 +83,12 @@ bool Texture::Load(const string& _filenameP)
     LOG(Info) << "Loaded texture " << filename;
 
     return true;
+}
+
+bool Texture::LoadDds(const string& _filename)
+{
+	
+    return false;
 }
 
 void Texture::UpdateInfo(int& _widthOut, int& _heightOut)
