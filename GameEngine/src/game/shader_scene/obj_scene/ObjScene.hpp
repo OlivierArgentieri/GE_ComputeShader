@@ -4,6 +4,7 @@
 #include <ext/vector_float3.hpp>
 
 #include "ShaderScene.hpp"
+#include "Transform.hpp"
 
 class ObjScene : public ShaderScene
 {
@@ -18,8 +19,12 @@ private:
 
 	GLuint vertexbuffer;
 	GLuint uvbuffer;
-	GLuint matrixID;
 
+
+	/* mvp */
+	GLuint matrixID;
+	glm::mat4 mvp;
+	
 public:
 	ObjScene() = default;
 	ObjScene(const ObjScene&) = delete;

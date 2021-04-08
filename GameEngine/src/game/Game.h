@@ -60,5 +60,5 @@ private:
     glm::mat4 projectionMatrix;
     GLuint matrixID;
     glm::mat4 mvp;
-    void computeMVP();
+    void computeMVP(glm::mat4 _objectModelMatrix);
 };

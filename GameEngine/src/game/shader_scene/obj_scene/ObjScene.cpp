@@ -4,6 +4,11 @@
 
 void ObjScene::Init()
 {
+	transform.SetScale(glm::vec3(1, 1, 1));
+	transform.SetPosition(glm::vec3(0, 0, 0));
+	transform.SetRotation(45, glm::vec3(1, 1, 0));
+
+	
 	// test load obj
 	glDepthFunc(GL_LESS);
 
@@ -50,6 +55,8 @@ void ObjScene::Update(float _dt, glm::mat4 _mvp)
 {
 	//framgentShader.Use(); // todo static method
 	glUseProgram(programID);
+
+	
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 	
 	// 1rst attribute buffer : vertices
@@ -83,7 +90,6 @@ void ObjScene::Update(float _dt, glm::mat4 _mvp)
 
 void ObjScene::Clean()
 {
-	
 }
 
 string ObjScene::GetName()

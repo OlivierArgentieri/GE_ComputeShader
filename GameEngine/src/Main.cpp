@@ -41,7 +41,6 @@ int main(void)
 	float _dt;
 	while (_game.isRunning)
 	{
-		
 		_dt = static_cast<float>(_timer.ComputeDeltaTime());
 		_window.UpdateFpsCounter(_dt);
 		_window.UpdateBackgroundColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);

@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/texture)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/timer)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/window)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/log)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene/sample_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/)
@@ -37,6 +38,9 @@ FILE(GLOB WINDOW ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/window/*.*)
 # log
 FILE(GLOB LOG ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/log/*.*)
 
+# transform
+FILE(GLOB TRANSFORM ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform/*.*)
+
 # game
 FILE(GLOB GAME ${CMAKE_SOURCE_DIR}/GameEngine/src/game/*.*)
 
@@ -60,9 +64,11 @@ ADD_EXECUTABLE(GameEngine
 	${WINDOW}
 	${GAME}
 	${OBJ_LOADER}
+	${TRANSFORM}
 	${SHADER_SCENE}
 	${SAMPLE_SCENE}	
-	${OBJ_SCENE}	
+	${OBJ_SCENE}
+.	
 )
 TARGET_LINK_LIBRARIES(GameEngine glfw3 opengl32 User32 Gdi32 Shell32 glew32s)
 
@@ -75,6 +81,7 @@ SOURCE_GROUP(src/engine/timer FILES ${TIMER})
 SOURCE_GROUP(src/engine/window FILES ${WINDOW})
 SOURCE_GROUP(src/engine/log FILES ${LOG})
 SOURCE_GROUP(src/engine/loaders/obj FILES ${OBJ_LOADER})
+SOURCE_GROUP(src/engine/transform/ FILES ${TRANSFORM})
 SOURCE_GROUP(src/game/shader_scene FILES ${SHADER_SCENE})
 SOURCE_GROUP(src/game/shader_scene/sample_scene FILES ${SAMPLE_SCENE})
 SOURCE_GROUP(src/game/shader_scene/obj_scene FILES ${OBJ_SCENE})
