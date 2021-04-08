@@ -6,7 +6,6 @@
 
 #include "Game.h"
 #include "Log.h"
-#include "obj_loader.h"
 #include "Timer.h"
 #include "Window.h"
 

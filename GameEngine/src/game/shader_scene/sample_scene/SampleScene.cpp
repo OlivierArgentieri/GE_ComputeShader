@@ -116,22 +116,20 @@ void SampleScene::Init()
 
 void SampleScene::Update(float _dt, glm::mat4 _mvp)
 {
-
+	
 	glBegin(GL_TRIANGLES);
 	glVertex2f(-0.5f, -0.5f);
 	glVertex2f(0.0f, 0.5f);
 	glVertex2f(0.5f, -0.5f);
 	glEnd();
-
 	glUseProgram(programID);
 	glBindVertexArray(quadVAO);
 
 	glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, quadTextureID);
+	glBindTexture(GL_TEXTURE_2D, quadTextureID);
 
 	//glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, (GLvoid*)0);
-	
-	
+
 	ImVec2 wsize = ImGui::GetWindowSize();
 	ImGui::Image(reinterpret_cast<ImTextureID>(quadTextureID), wsize, ImVec2(0, 1), ImVec2(1, 0));
 

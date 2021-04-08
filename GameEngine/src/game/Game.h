@@ -61,4 +61,7 @@ private:
     GLuint matrixID;
     glm::mat4 mvp;
     void computeMVP(glm::mat4 _objectModelMatrix);
+
+	/* === FBO Object === */
+   
 };

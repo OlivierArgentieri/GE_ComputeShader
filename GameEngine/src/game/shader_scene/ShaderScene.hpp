@@ -2,6 +2,8 @@
 #include "Shader.h"
 #include <string>
 #include <ext/matrix_float4x4.hpp>
+
+#include "FrameBufferObject.hpp"
 #include "Transform.hpp"
 
 using std::string;
@@ -11,6 +13,9 @@ class ShaderScene
 protected:
 	Shader shader;
 	Transform transform;
+
+	/** create fbo */
+	FrameBufferObject fbo;
 
 public:
 	virtual void Init() =0;

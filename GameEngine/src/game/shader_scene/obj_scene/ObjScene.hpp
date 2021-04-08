@@ -23,14 +23,10 @@ private:
 	GLuint textureID;
 	GLuint texture;
 
-	/* mvp */
+	/* mvp for shader */
 	GLuint matrixID;
-	glm::mat4 mvp;
 
 	
-	unsigned int fbo;
-	unsigned int texColorBuffer;
-	GLuint depthrenderbuffer;
 public:
 	ObjScene() = default;
 	ObjScene(const ObjScene&) = delete;

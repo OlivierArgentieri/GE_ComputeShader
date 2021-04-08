@@ -5,26 +5,16 @@
 
 #include <glm/glm.hpp>
 
-#include "obj_loader.h"
+#include "ObjLoader.hpp"
+
+#include "Game.h"
 
 // see : http://www.opengl-tutorial.org/fr/beginners-tutorials/tutorial-7-model-loading/
 
-// Very, VERY simple OBJ loader.
-// Here is a short list of features a real function would provide : 
-// - Binary files. Reading a model should be just a few memcpy's away, not parsing a file at runtime. In short : OBJ is not very great.
-// - Animations & bones (includes bones weights)
-// - Multiple UVs
-// - All attributes should be optional, not "forced"
-// - More stable. Change a line in the OBJ file and it crashes.
-// - More secure. Change another line and you can inject code.
-// - Loading from memory, stream, etc
 
-bool loadOBJ(
-	const char* path,
-	std::vector<glm::vec3>& out_vertices,
-	std::vector<glm::vec2>& out_uvs,
-	std::vector<glm::vec3>& out_normals
-) {
+
+bool ObjLoader::Load(const char* path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec2>& out_uvs, std::vector<glm::vec3>& out_normals)
+{
 	printf("Loading OBJ file %s...\n", path);
 
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
@@ -34,21 +24,18 @@ bool loadOBJ(
 
 
 	FILE* file = fopen(path, "r");
-	if (file == NULL) {
-		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		getchar();
+	if (!file) {
+		LOG(Error) << "Unable to locate file : " << path;
 		return false;
 	}
 
-	while (1) {
+	while (true) {
 
 		char lineHeader[128];
 		// read the first word of the line
 		int res = fscanf(file, "%s", lineHeader);
 		if (res == EOF)
 			break; // EOF = End Of File. Quit the loop.
-
-		// else : parse lineHeader
 
 		if (strcmp(lineHeader, "v") == 0) {
 			glm::vec3 vertex;

@@ -8,9 +8,10 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/texture)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/timer)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/window)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/log)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/obj/)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/dds/)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/obj)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/dds)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene/sample_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/)
@@ -43,6 +44,9 @@ FILE(GLOB LOG ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/log/*.*)
 # transform
 FILE(GLOB TRANSFORM ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform/*.*)
 
+# fbo
+FILE(GLOB FBO ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo/*.*)
+
 # game
 FILE(GLOB GAME ${CMAKE_SOURCE_DIR}/GameEngine/src/game/*.*)
 
@@ -66,6 +70,7 @@ ADD_EXECUTABLE(GameEngine
 	${TIMER}
 	${WINDOW}
 	${GAME}
+	${FBO}
 	${OBJ_LOADER}
 	${DDS_LOADER}
 	${TRANSFORM}
@@ -85,7 +90,8 @@ SOURCE_GROUP(src/engine/window FILES ${WINDOW})
 SOURCE_GROUP(src/engine/log FILES ${LOG})
 SOURCE_GROUP(src/engine/loaders/obj FILES ${OBJ_LOADER})
 SOURCE_GROUP(src/engine/loaders/dds FILES ${DDS_LOADER})
-SOURCE_GROUP(src/engine/transform/ FILES ${TRANSFORM})
+SOURCE_GROUP(src/engine/transform FILES ${TRANSFORM})
+SOURCE_GROUP(src/engine/render/fbo FILES ${FBO})
 SOURCE_GROUP(src/game/shader_scene FILES ${SHADER_SCENE})
 SOURCE_GROUP(src/game/shader_scene/sample_scene FILES ${SAMPLE_SCENE})
 SOURCE_GROUP(src/game/shader_scene/obj_scene FILES ${OBJ_SCENE})
