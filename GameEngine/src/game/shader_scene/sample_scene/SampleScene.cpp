@@ -5,6 +5,10 @@
 // from https://zestedesavoir.com/tutoriels/1554/introduction-aux-compute-shaders/
 // to test this OpenGL environments 
 
+SampleScene::SampleScene(Game* _game) : ShaderScene(_game)
+{
+}
+
 void SampleScene::Init()
 {
 	/* ----- Quad Context ----- #1#*/

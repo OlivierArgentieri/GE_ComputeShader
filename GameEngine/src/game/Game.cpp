@@ -5,10 +5,11 @@
 
 
 #include "imgui.h"
+#include "RenderView.hpp"
 #include "Texture.h"
 #include "../engine/loaders/obj/ObjLoader.hpp"
 
-Game::Game() : isRunning(false), windowWidth(0), windowHeight(0)
+Game::Game() : isRunning(false), windowWidth(0), windowHeight(0), objScene(this), sampleScene(this)
 {
 }
 
@@ -20,10 +21,6 @@ void Game::Init(int _screenWidth, int _screenHeight)
     windowWidth = _screenWidth;
     windowHeight = _screenHeight;
     isRunning = true;
-	
-    RegisterShaderScene(&sampleScene);
-	RegisterShaderScene(&objScene);
-
 }
 
 void Game::Load()

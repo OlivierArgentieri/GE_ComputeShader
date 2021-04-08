@@ -7,9 +7,10 @@
 #include "Transform.hpp"
 
 using std::string;
+class Game;
 
 class ShaderScene
-{	
+{
 protected:
 	Shader shader;
 	Transform transform;
@@ -17,6 +18,9 @@ protected:
 	/** create fbo */
 	FrameBufferObject fbo;
 
+	Game* game;
+
+	ShaderScene(Game* _game);
 public:
 	virtual void Init() =0;
 	virtual void Update(float _dt, glm::mat4 _mvp) =0;

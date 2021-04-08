@@ -5,6 +5,10 @@
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
+ObjScene::ObjScene(Game* _game) : ShaderScene(_game)
+{
+}
+
 void ObjScene::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
@@ -108,6 +112,7 @@ void ObjScene::Update(float _dt, glm::mat4 _mvp)
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 }
+
 
 void ObjScene::Clean()
 {

@@ -19,7 +19,7 @@ class SampleScene : public ShaderScene
 	
 public:
 	
-	SampleScene() = default;
+	SampleScene(Game* _game);
 	SampleScene(const SampleScene&) = delete;
 
 	void Init() override;

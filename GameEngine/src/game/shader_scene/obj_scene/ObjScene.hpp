@@ -3,6 +3,8 @@
 #include <ext/vector_float2.hpp>
 #include <ext/vector_float3.hpp>
 
+
+#include "RenderView.hpp"
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
 
@@ -26,13 +28,15 @@ private:
 	/* mvp for shader */
 	GLuint matrixID;
 
+	RenderView rv;
 	
 public:
-	ObjScene() = default;
+	ObjScene(Game* _game);
 	ObjScene(const ObjScene&) = delete;
 
 	void Init() override;
 	void Update(float _dt, glm::mat4 _mvp) override;
+	void NotUpdate(float _dt, glm::mat4 _mvp);
 	void Clean() override;
 	string GetName() override;
 };
