@@ -43,7 +43,9 @@ int main(void)
 	float _dt;
 	while (_game.isRunning)
 	{
-		_dt = static_cast<float>(_timer.ComputeDeltaTime());
+		Timer::BeginFrame();
+		
+		_dt = Timer::GetDeltaTime();
 		_window.UpdateFpsCounter(_dt);
 		_window.UpdateBackgroundColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 
@@ -67,7 +69,7 @@ int main(void)
 		_window.SwapBuffer();
 		_window.UpdateInputEvent();
 		_game.isRunning = _window.CloseWindow();
-		_timer.DelayTime();
+		Timer::EndFrame();
 	}
 	
 	return 0;

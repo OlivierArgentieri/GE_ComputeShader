@@ -3,6 +3,11 @@
 class Timer
 {
 public:
+    static float GetDeltaTime();
+    static void BeginFrame();
+    static void EndFrame();
+
+	
     Timer();
     virtual ~Timer();
 
@@ -16,6 +21,11 @@ public:
     static double GetTimeSinceStart() { return timeSinceStart; }
 
 private:
+    static double currentTime;
+    static double oldTime;
+    static float deltaTime;
+
+	
     const static int FPS = 60;
     const static int FRAME_DELAY = 1000 / FPS;
     const unsigned int MAX_DT = 50;

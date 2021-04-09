@@ -57,7 +57,7 @@ void ObjScene::Init()
 
 	glGenBuffers(1, &ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(ssbo_data), ssbo_data, GL_DYNAMIC_READ); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(ssbo_data), ssbo_data, GL_STATIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
 	
@@ -85,10 +85,9 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	
 	ssbo_data->test = _dt;
+
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(ssbo_data), ssbo_data, GL_DYNAMIC_READ); //sizeof(data) only works for statically sized C/C++ arrays.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(ssbo_data), ssbo_data);
 	
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
@@ -121,9 +120,6 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,(void*)0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-	//ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
-	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -153,9 +149,6 @@ void ObjScene::OnReloadComputeShader()
 {
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
-	computeShader.CreateShaderProgram();
-
-	
 }
 
 void ObjScene::Update(float _dt, glm::mat4 _mvp)
