@@ -16,8 +16,6 @@ private:
 	std::vector< glm::vec3 > normals; // Won't be used at the moment.
 
 	GLuint programID;
-	Shader vertexShader;
-	Shader framgentShader;
 
 	GLuint vertexbuffer;
 	GLuint uvbuffer;
@@ -27,7 +25,11 @@ private:
 
 	/* mvp for shader */
 	GLuint matrixID;
-	
+
+protected:
+	void OnReloadFragmentShader() override;
+	void OnReloadVertexShader() override;
+
 public:
 	ObjScene();
 	ObjScene(const ObjScene&) = delete;
@@ -35,8 +37,8 @@ public:
 	void Init() override;
 	void ReloadVertexShader();
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
+	
 	void Update(float _dt, glm::mat4 _mvp) override;
-	void NotUpdate(float _dt, glm::mat4 _mvp);
 	void Clean() override;
 	char* GetName()  override ; 
 };

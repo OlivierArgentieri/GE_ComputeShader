@@ -42,5 +42,6 @@ void Transform::SetScale(glm::vec3 _scale)
 /// <param name="_nomalRotation">normal of rotation </param>
 void Transform::SetRotation(float _angle, glm::vec3 _normalRotation)
 {
+	if (_normalRotation == glm::vec3(0)) return;
 	modelMatrix = glm::rotate<float>(glm::mat4(1.0f), glm::radians(_angle), _normalRotation);
 }

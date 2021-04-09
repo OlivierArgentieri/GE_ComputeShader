@@ -13,7 +13,7 @@ void ObjScene::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
-	transform.SetRotation(45, glm::vec3(1, 1, 0));
+	
 
 
 	GLuint VertexArrayID;
@@ -22,16 +22,16 @@ void ObjScene::Init()
 
 	/**/
 	vertexShader.LoadShader("assets/obj/TransformVertexShader.vertexshader", GL_VERTEX_SHADER);
-	framgentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
+	fragmentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
 	
 	vertexShader.CompileShader();
-	framgentShader.CompileShader();
+	fragmentShader.CompileShader();
 
 	vertexShader.CreateShaderProgram();
 
 	programID = vertexShader.GetProgramID();
 
-	framgentShader.CreateShaderProgram(programID); // same program for both shader
+	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 	
 
 	matrixID = glGetUniformLocation(programID, "MVP");
@@ -66,13 +66,13 @@ void ObjScene::ReloadVertexShader()
 	//framgentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
 
 	vertexShader.CompileShader();
-	framgentShader.CompileShader();
+	fragmentShader.CompileShader();
 
 	vertexShader.CreateShaderProgram();
 
 	programID = vertexShader.GetProgramID();
 
-	framgentShader.CreateShaderProgram(programID); // same program for both shader
+	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 	LOG(Info) << "OK";
 
 }
@@ -80,7 +80,7 @@ void ObjScene::ReloadVertexShader()
 void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	//framgentShader.Use(); // todo static method
-	Shader::Use(framgentShader.GetProgramID());
+	Shader::Use(fragmentShader.GetProgramID());
 
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 	glActiveTexture(GL_TEXTURE0);
@@ -102,26 +102,38 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	//ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
 	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 
-	ImGui::Begin("Settings");
-	if(ImGui::Button("Reload Shaders "))
-	{
-		ReloadVertexShader();
-	}
 
-	char* str1 = &vertexShader.shaderBuffer[0];
-	
-	ImGui::InputTextMultiline("vertexShader", str1, vertexShader.shaderBuffer.length()*2, ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
-	ImGui::End(); 
-	
-	
+void ObjScene::OnReloadFragmentShader()
+{
+	fragmentShader.CompileShader();
+
+	vertexShader.CreateShaderProgram();
+	programID = fragmentShader.GetProgramID();
+
+	vertexShader.CreateShaderProgram(programID); // same program for both shader
+	LOG(Info) << "OK";
+}
+
+void ObjScene::OnReloadVertexShader()
+{
+	vertexShader.CompileShader();
+
+	vertexShader.CreateShaderProgram();
+	programID = vertexShader.GetProgramID();
+
+	fragmentShader.CreateShaderProgram(programID); // same program for both shader
+	LOG(Info) << "OK";
 }
 
 void ObjScene::Update(float _dt, glm::mat4 _mvp)
 {
 	Render(_dt, _mvp, GetName());
+	UpdateSettingsUI();
 }
+
 
 
 void ObjScene::Clean()

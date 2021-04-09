@@ -12,9 +12,25 @@ class Editor;
 class ShaderScene
 {
 protected:
-	Shader shader;
+	Shader vertexShader;
+	Shader fragmentShader;
+	Shader computeShader;
 	Transform transform;
 	ShaderScene();
+	void UpdateSettingsUI();
+
+private:
+	/** Transform Editor */
+	void UpdateTransformEditorUI();
+	float angle;
+	glm::vec3 pivot;
+protected:
+	/** Shader Editor*/
+	void UpdateShaderEditorUI();
+	virtual void OnReloadVertexShader();
+	virtual void OnReloadFragmentShader();
+	virtual void OnReloadComputeShader();
+
 public:
 	virtual void Init() =0;
 	virtual void Update(float _dt, glm::mat4 _mvp) =0;
