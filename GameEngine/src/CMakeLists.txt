@@ -13,9 +13,11 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/dds)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_view)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene/sample_scene)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/game/)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sample_scene)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/)
 
 # Files
 FILE(GLOB_RECURSE ENGINE_SOURCES *.cpp *.c)
@@ -50,12 +52,13 @@ FILE(GLOB FBO ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo/*.*)
 FILE(GLOB RENDER_VIEW ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_view/*.*)
 
 # game
-FILE(GLOB GAME ${CMAKE_SOURCE_DIR}/GameEngine/src/game/*.*)
+FILE(GLOB EDITOR ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/*.*)
 
 # scenes
-FILE(GLOB SHADER_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene/*.*)
-FILE(GLOB SAMPLE_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene/sample_scene/*.*)
-FILE(GLOB OBJ_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/game/shader_scene/obj_scene/*.*)
+FILE(GLOB SHADER_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/*.*)
+FILE(GLOB SAMPLE_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sample_scene/*.*)
+FILE(GLOB OBJ_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene/*.*)
+FILE(GLOB OBJ_SCENE_TEST ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test/*.*)
 
 
 # ======== loaders ========
@@ -71,7 +74,7 @@ ADD_EXECUTABLE(GameEngine
 	${TEXTURE}
 	${TIMER}
 	${WINDOW}
-	${GAME}
+	${EDITOR}
 	${FBO}
 	${RENDER_VIEW}
 	${OBJ_LOADER}
@@ -80,7 +83,7 @@ ADD_EXECUTABLE(GameEngine
 	${SHADER_SCENE}
 	${SAMPLE_SCENE}	
 	${OBJ_SCENE}
-	.
+	${OBJ_SCENE_TEST}
 )
 TARGET_LINK_LIBRARIES(GameEngine glfw3 opengl32 User32 Gdi32 Shell32 glew32s)
 
@@ -97,10 +100,11 @@ SOURCE_GROUP(src/engine/loaders/dds FILES ${DDS_LOADER})
 SOURCE_GROUP(src/engine/transform FILES ${TRANSFORM})
 SOURCE_GROUP(src/engine/render/fbo FILES ${FBO})
 SOURCE_GROUP(src/engine/render/render_view FILES ${RENDER_VIEW})
-SOURCE_GROUP(src/game/shader_scene FILES ${SHADER_SCENE})
-SOURCE_GROUP(src/game/shader_scene/sample_scene FILES ${SAMPLE_SCENE})
-SOURCE_GROUP(src/game/shader_scene/obj_scene FILES ${OBJ_SCENE})
-SOURCE_GROUP(src/game/ FILES ${GAME})
+SOURCE_GROUP(src/editor/shader_scene FILES ${SHADER_SCENE})
+SOURCE_GROUP(src/editor/shader_scene/sample_scene FILES ${SAMPLE_SCENE})
+SOURCE_GROUP(src/editor/shader_scene/obj_scene FILES ${OBJ_SCENE})
+SOURCE_GROUP(src/editor/shader_scene/obj_scene_test FILES ${OBJ_SCENE_TEST})
+SOURCE_GROUP(src/editor/ FILES ${EDITOR})
 
 # Compile option
 TARGET_COMPILE_DEFINITIONS(GameEngine PUBLIC GLEW_STATIC)

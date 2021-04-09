@@ -2,9 +2,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "DdsLoader.hpp"
+#include "Editor.h"
 #include "ImGUI/imgui.h"
 
-#include "Game.h"
 #include "Log.h"
 #include "Timer.h"
 #include "Window.h"
@@ -34,7 +34,7 @@ int main(void)
 
 	// Init Game
 	Timer _timer;
-	Game _game;
+	Editor _game;
 	_game.Init(SCREEN_WIDTH, SCREEN_WIDTH);
 	_game.Load();
 
@@ -57,8 +57,6 @@ int main(void)
 		_window.ClearBuffer();
 		_window.NewImGUIFrame();
 
-		bool open = false;
-		
 		
 		ImGui::BeginMainMenuBar();
 		ImGui::Text("shader tests");
@@ -67,9 +65,9 @@ int main(void)
 
 		/* render scene here */
 		_game.Update(_dt);
-
+		_game.UpdateUI();
 		_window.ImGUIRender();
-		_game.Render();
+		
 		_window.SwapBuffer();
 		_window.UpdateInputEvent();
 		_game.isRunning = _window.CloseWindow();

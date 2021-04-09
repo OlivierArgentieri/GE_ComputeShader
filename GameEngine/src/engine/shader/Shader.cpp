@@ -1,18 +1,12 @@
 #include "Shader.h"
 
-Shader::Shader() {}
+Shader::Shader(): sid(0), programId(0)
+{}
 
 Shader::~Shader() {}
 
 
 void Shader::LoadShader(const char* _fileName, unsigned int _shaderType) {
-    /*FILE* shader = fopen(_fileName, "r");
-
-    if (!shader)
-    {
-        LOG(Error) << "Shader File not found ! : " << _fileName;
-        return;
-    }*/
     std::ifstream VertexShaderStream(_fileName, std::ios::in);
     if (VertexShaderStream.is_open()) {
         std::stringstream sstr;
@@ -24,17 +18,6 @@ void Shader::LoadShader(const char* _fileName, unsigned int _shaderType) {
         LOG(Error) << "Shader File not found ! : " << _fileName;
         return;
     }
-	
-	/*shaderBuffer = new char[1280];
-    for (int i = 0; i < 1280; i++) {
-        shaderBuffer[i] = (unsigned char)fgetc(shader);
-        if (shaderBuffer[i] == EOF) {
-            shaderBuffer[i] = '\0';
-            break;
-        }
-    }
-    fclose(shader);*/
-
     sid = glCreateShader(_shaderType);
 }
 
@@ -53,7 +36,6 @@ void Shader::CompileShader() {
     glGetShaderiv(sid, GL_COMPILE_STATUS, &Result);
     glGetShaderInfoLog(sid, InfoLogLength, NULL, shaderErrorMessage);
     
-	
     if (strlen(shaderErrorMessage) != 0)
         LOG(Error) << shaderErrorMessage << "\n";
 }
@@ -92,10 +74,9 @@ void Shader::CreateShaderProgram(GLuint _programId)
     glDeleteShader(sid);
 }
 
-Shader& Shader::Use()
+void Shader::Use(GLuint _programID)
 {
-    glUseProgram(programId);
-    return *this;
+    glUseProgram(_programID);
 }
 
 void Shader::CheckShaderErrors(GLuint _shader, std::string _shaderType)

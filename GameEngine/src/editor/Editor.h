@@ -4,37 +4,24 @@
 #include <ext/matrix_float4x4.hpp>
 
 
-
+#include "ObjSceneTest.hpp"
 #include "SampleScene.hpp"
-#include "Shader.h"
 #include "obj_scene/ObjScene.hpp"
 
 using std::vector;
 
 // run a simple game loop
-class Game
+class Editor
 {
 
 private:
-    Shader shader;
-    GLuint vao;
-
-    float speed = 1.0f;
-    float lastPosition = 0.5f;
-    float matrix[16]
-    {
-        1.0f, 0.0f, 0.0f, 0.0f, // first column
-        0.0f, 1.0f, 0.0f, 0.0f, // second
-        0.0f, 0.0f, 1.0f, 0.0f, // third
-        0.5f, 0.0f, 0.0f, 1.0f // fourth
-    };
-
+    int windowWidth, windowHeight;
     vector<ShaderScene*> shaderScenes;
-
+    vector<const char*> shaderScenesNames;
 
 public:
-    Game();
-    virtual ~Game();
+    Editor();
+    virtual ~Editor();
 
     void Init(int _screenWidth, int _screenHeight);
     void Load();
@@ -42,9 +29,10 @@ public:
     void Update(float _dt);
     void Render();
     void Clean();
+    void UpdateUI();
 
     bool isRunning;
-    int windowWidth, windowHeight;
+    
 
 	/* register shader scene objects */
     void RegisterShaderScene(ShaderScene* _shaderScene);
@@ -53,7 +41,10 @@ public:
 private:
     /* === load shader scene objects ===*/
     ObjScene objScene;
+    ObjSceneTest sampleScene;
 
+	// current:
+    int currentScene;
     //SampleScene sampleScene;
 
 	/* === compute mvp === */

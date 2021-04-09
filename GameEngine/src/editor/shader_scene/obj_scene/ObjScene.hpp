@@ -29,7 +29,7 @@ private:
 	GLuint matrixID;
 	
 public:
-	ObjScene(Game* _game);
+	ObjScene();
 	ObjScene(const ObjScene&) = delete;
 
 	void Init() override;
@@ -38,5 +38,5 @@ public:
 	void Update(float _dt, glm::mat4 _mvp) override;
 	void NotUpdate(float _dt, glm::mat4 _mvp);
 	void Clean() override;
-	string GetName() override;
+	char* GetName()  override ; 
 };

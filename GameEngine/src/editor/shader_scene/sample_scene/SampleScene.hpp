@@ -20,13 +20,13 @@ class SampleScene : public ShaderScene, RenderView
 	
 public:
 	
-	SampleScene(Game* _game);
+	SampleScene();
 	SampleScene(const SampleScene&) = delete;
 
 	void Init() override;
 	void Update(float _dt, glm::mat4 _mvp) override;
 	void Clean() override;
-	string GetName() override;
+	char* GetName()  override;
 
 private:
 	GLuint quadIBO;
@@ -38,4 +38,9 @@ private:
 	GLuint programID;
 
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
+
+	/** === shaders === */
+	Shader vertexShader;
+	Shader fragmentShader;
+	Shader computeShader;
 };

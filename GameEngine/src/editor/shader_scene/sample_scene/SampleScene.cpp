@@ -5,7 +5,7 @@
 // from https://zestedesavoir.com/tutoriels/1554/introduction-aux-compute-shaders/
 // to test this OpenGL environments 
 
-SampleScene::SampleScene(Game* _game) : ShaderScene(_game)
+SampleScene::SampleScene() : programID(0)
 {
 }
 
@@ -81,30 +81,29 @@ void SampleScene::Init()
 	glBindVertexArray(0);
 
 	/* ----- Compute Shader ----- #1# */
-	Shader _computeShader;
+	
 
-	_computeShader.LoadShader("assets/sample/compute.shader", GL_COMPUTE_SHADER);
-	_computeShader.CompileShader();
-	_computeShader.CreateShaderProgram();
+	computeShader.LoadShader("assets/sample/compute.shader", GL_COMPUTE_SHADER);
+	computeShader.CompileShader();
+	computeShader.CreateShaderProgram();
 
 	/* ----- Vertex shaders and Fragments shaders -----  */
-	Shader _vertexShader;
-	Shader _fragmentShader;
+	
 
 
-	_vertexShader.LoadShader("assets/sample/vertex.shader", GL_VERTEX_SHADER);
-	_fragmentShader.LoadShader("assets/sample/fragment.shader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/sample/vertex.shader", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/sample/fragment.shader", GL_FRAGMENT_SHADER);
 
-	_vertexShader.CompileShader();
-	_fragmentShader.CompileShader();
+	vertexShader.CompileShader();
+	fragmentShader.CompileShader();
 
-	_vertexShader.CreateShaderProgram();
-	programID = _vertexShader.GetProgramID();
-	_fragmentShader.CreateShaderProgram(programID);/**/
+	vertexShader.CreateShaderProgram();
+	programID = vertexShader.GetProgramID();
+	fragmentShader.CreateShaderProgram(programID);/**/
 
 
 	/* ----- Run Compute shader ----- #1# */
-	_computeShader.Use();
+	Shader::Use(computeShader.GetProgramID());
 	/**/glBindTexture(GL_TEXTURE_2D, quadTextureID);
 	glBindImageTexture(0, quadTextureID, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glDispatchCompute(40, 30, 1);
@@ -116,7 +115,7 @@ void SampleScene::Init()
 
 void SampleScene::Update(float _dt, glm::mat4 _mvp)
 {
-	Render(_dt, _mvp, GetName().c_str());
+	Render(_dt, _mvp, GetName());
 
 }
 
@@ -124,13 +123,24 @@ void SampleScene::Clean()
 {
 }
 
-string SampleScene::GetName()
+char *  SampleScene::GetName()
 {
 	return "Sample_shader_Scene";
 }
 
 void SampleScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
+
+	/* ----- Run Compute shader ----- #1# */
+	Shader::Use(computeShader.GetProgramID());
+	/**/glBindTexture(GL_TEXTURE_2D, quadTextureID);
+	glBindImageTexture(0, quadTextureID, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glDispatchCompute(40, 30, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
+	
 	glBegin(GL_TRIANGLES);
 	glVertex2f(-0.5f, -0.5f);
 	glVertex2f(0.0f, 0.5f);

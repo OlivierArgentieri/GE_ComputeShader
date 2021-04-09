@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
-ObjScene::ObjScene(Game* _game) : ShaderScene(_game)
+ObjScene::ObjScene() : programID(0), vertexbuffer(0), uvbuffer(0), textureID(0), texture(0), matrixID(0)
 {
 }
 
@@ -80,7 +80,7 @@ void ObjScene::ReloadVertexShader()
 void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	//framgentShader.Use(); // todo static method
-	glUseProgram(programID);
+	Shader::Use(framgentShader.GetProgramID());
 
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 	glActiveTexture(GL_TEXTURE0);
@@ -120,7 +120,7 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 
 void ObjScene::Update(float _dt, glm::mat4 _mvp)
 {
-	Render(_dt, _mvp, GetName().c_str());
+	Render(_dt, _mvp, GetName());
 }
 
 
@@ -128,7 +128,8 @@ void ObjScene::Clean()
 {
 }
 
-string ObjScene::GetName()
+
+ char* ObjScene::GetName() 
 {
 	return "Obj Scene";
 }

@@ -4,7 +4,7 @@
 class FrameBufferObject
 {
 private:
-    static FrameBufferObject* instance;
+    //static FrameBufferObject* instance;
 	
     GLuint textureIdFBO;
     GLuint fbo;
@@ -13,13 +13,13 @@ private:
 public:
     FrameBufferObject();
 
-    /**/
+    /*
     static FrameBufferObject* GetInstance()
     {
         if (!instance)
             instance = new FrameBufferObject();
         return instance;
-    }
+    }*/
     
 	
     GLuint CreateRenderTexture();

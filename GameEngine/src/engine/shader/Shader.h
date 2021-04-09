@@ -18,7 +18,7 @@ public:
     GLuint GetProgramID() const;
     GLuint GetShaderID() const { return sid; }
     // set current shader
-    Shader& Use();
+    static void Use(GLuint _programID);
     std::string shaderBuffer;
 
 private:

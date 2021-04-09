@@ -7,7 +7,8 @@
 
 #include "ObjLoader.hpp"
 
-#include "Game.h"
+#include "Log.h"
+
 
 // see : http://www.opengl-tutorial.org/fr/beginners-tutorials/tutorial-7-model-loading/
 

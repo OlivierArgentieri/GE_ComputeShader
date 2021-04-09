@@ -1,11 +1,9 @@
 #include "ShaderScene.hpp"
 
-#include "Game.h"
 #include "Transform.hpp"
 
-ShaderScene::ShaderScene(Game* _game)
+ShaderScene::ShaderScene()
 {
-	_game->RegisterShaderScene(this);
 }
 
 Transform ShaderScene::GetTransform() const

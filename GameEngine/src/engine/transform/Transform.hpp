@@ -4,7 +4,7 @@
 class Transform
 {
 private:
-	glm::mat4 modelMatrix;
+	glm::mat4 modelMatrix = glm::mat4(0);
 
 public:
 	glm::vec3 position;
