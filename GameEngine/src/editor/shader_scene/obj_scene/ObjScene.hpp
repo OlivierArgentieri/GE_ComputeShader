@@ -29,13 +29,13 @@ private:
 protected:
 	void OnReloadFragmentShader() override;
 	void OnReloadVertexShader() override;
+	void OnReloadComputeShader() override;
 
 public:
 	ObjScene();
 	ObjScene(const ObjScene&) = delete;
 
 	void Init() override;
-	void ReloadVertexShader();
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
 	
 	void Update(float _dt, glm::mat4 _mvp) override;

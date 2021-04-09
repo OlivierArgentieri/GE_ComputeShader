@@ -1,7 +1,3 @@
-
-#include <glm/gtc/matrix_transform.hpp>
-
-#include "DdsLoader.hpp"
 #include "Editor.h"
 #include "ImGUI/imgui.h"
 

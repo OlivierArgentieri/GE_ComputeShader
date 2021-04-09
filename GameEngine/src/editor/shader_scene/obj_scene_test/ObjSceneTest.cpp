@@ -38,7 +38,7 @@ void ObjSceneTest::Init()
 
 	/* Texture */
 	// Load the texture
-	DdsLoader::LoadFile("assets/obj/uvmap.dds", texture);
+	DdsLoader::LoadFile("assets/obj/UVChecker.dds", texture);
 
 	// Get a handle for our "myTextureSampler" uniform
 	textureID = glGetUniformLocation(programID, "myTextureSampler");
@@ -63,7 +63,7 @@ void ObjSceneTest::OnReloadFragmentShader()
 	programID = fragmentShader.GetProgramID();
 
 	vertexShader.CreateShaderProgram(programID); // same program for both shader
-	LOG(Info) << "OK";
+	
 }
 
 void ObjSceneTest::OnReloadVertexShader()

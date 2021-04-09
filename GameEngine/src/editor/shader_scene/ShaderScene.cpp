@@ -52,7 +52,7 @@ void ShaderScene::UpdateShaderEditorUI()
 	{
 		if (ImGui::Button("Reload Compute shader"))
 		{
-			OnReloadFragmentShader();
+			OnReloadComputeShader();
 		}
 		ImGui::InputTextMultiline("computeShader", &computeShader.shaderBuffer[0], computeShader.shaderBuffer.length() * 2, ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
 		ImGui::EndTabItem();

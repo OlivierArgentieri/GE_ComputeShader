@@ -21,8 +21,8 @@ void ObjScene::Init()
 	glBindVertexArray(VertexArrayID);
 
 	/**/
-	vertexShader.LoadShader("assets/obj/TransformVertexShader.vertexshader", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/obj/Transform.vertexshader", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/obj/Texture.fragmentshader", GL_FRAGMENT_SHADER);
 	
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -36,11 +36,20 @@ void ObjScene::Init()
 
 	matrixID = glGetUniformLocation(programID, "MVP");
 
-	/* Texture */
-	// Load the texture
-	DdsLoader::LoadFile("assets/obj/uvChecker.dds", texture);
+	/* Texture
+	// Load the texture*/
+	//DdsLoader::LoadFile("assets/obj/uvChecker.dds", texture);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 640, 480, 0, GL_RGBA, GL_FLOAT, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
-	// Get a handle for our "myTextureSampler" uniform
+	// Get a texture from shader
 	textureID = glGetUniformLocation(programID, "myTextureSampler");
 
 	/* load obj file */
@@ -53,38 +62,32 @@ void ObjScene::Init()
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 
-}
-
-void ObjScene::ReloadVertexShader()
-{
-	/*glDetachShader(vertexShader.GetProgramID(), vertexShader.GetShaderID());
-	glDetachShader(framgentShader.GetProgramID(), framgentShader.GetShaderID());
-	glDeleteShader(vertexShader.GetShaderID());
-	glDeleteShader(framgentShader.GetShaderID());*/
-	
-	//vertexShader.LoadShader("assets/obj/TransformVertexShader.vertexshader", GL_VERTEX_SHADER);
-	//framgentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
-
-	vertexShader.CompileShader();
-	fragmentShader.CompileShader();
-
-	vertexShader.CreateShaderProgram();
-
-	programID = vertexShader.GetProgramID();
-
-	fragmentShader.CreateShaderProgram(programID); // same program for both shader
-	LOG(Info) << "OK";
+	/** Compute Shader */
+	computeShader.LoadShader("assets/obj/base.computeshader", GL_COMPUTE_SHADER);
+	computeShader.CompileShader();
+	computeShader.CreateShaderProgram();
 
 }
 
 void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
+	/** Use compute shader */
+	Shader::Use(computeShader.GetProgramID());
+	// texture is our output
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glDispatchCompute(40, 30, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
 	//framgentShader.Use(); // todo static method
 	Shader::Use(fragmentShader.GetProgramID());
 
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	//glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(textureID, 0);
 
 
@@ -97,6 +100,7 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,(void*)0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
 	//ImGui::Text("Shader Text");               // Display some text (you can use a format strings too)
@@ -114,7 +118,6 @@ void ObjScene::OnReloadFragmentShader()
 	programID = fragmentShader.GetProgramID();
 
 	vertexShader.CreateShaderProgram(programID); // same program for both shader
-	LOG(Info) << "OK";
 }
 
 void ObjScene::OnReloadVertexShader()
@@ -125,7 +128,15 @@ void ObjScene::OnReloadVertexShader()
 	programID = vertexShader.GetProgramID();
 
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
-	LOG(Info) << "OK";
+}
+
+void ObjScene::OnReloadComputeShader()
+{
+	computeShader.CompileShader();
+	computeShader.CreateShaderProgram();
+	computeShader.CreateShaderProgram();
+
+	
 }
 
 void ObjScene::Update(float _dt, glm::mat4 _mvp)
