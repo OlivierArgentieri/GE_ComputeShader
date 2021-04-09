@@ -9,13 +9,16 @@ ObjScene::ObjScene() : programID(0), vertexbuffer(0), uvbuffer(0), textureID(0),
 {
 }
 
+ObjScene::~ObjScene()
+{
+	delete ssbo_data;
+}
+
 void ObjScene::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
 	
-
-
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -49,6 +52,15 @@ void ObjScene::Init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 640, 480, 0, GL_RGBA, GL_FLOAT, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	/** SSBO see  */
+	// todo see : https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object
+
+	glGenBuffers(1, &ssbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(ssbo_data), ssbo_data, GL_DYNAMIC_READ); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
+	
 	// Get a texture from shader
 	textureID = glGetUniformLocation(programID, "myTextureSampler");
 
@@ -71,12 +83,19 @@ void ObjScene::Init()
 
 void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
+	
+	ssbo_data->test = _dt;
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(ssbo_data), ssbo_data, GL_DYNAMIC_READ); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+	
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
 	// texture is our output
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(40, 30, 1);
+	glDispatchCompute(40, 30, 30);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glBindTexture(GL_TEXTURE_2D, 0);

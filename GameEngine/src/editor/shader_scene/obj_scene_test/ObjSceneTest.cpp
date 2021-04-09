@@ -21,8 +21,8 @@ void ObjSceneTest::Init()
 	glBindVertexArray(VertexArrayID);
 
 	/**/
-	vertexShader.LoadShader("assets/obj/TransformVertexShader.vertexshader", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/obj/TextureFragmentShader.fragmentshader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/obj/Transform.vertexshader", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/obj/Texture.fragmentshader", GL_FRAGMENT_SHADER);
 	
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -41,7 +41,7 @@ void ObjSceneTest::Init()
 	DdsLoader::LoadFile("assets/obj/UVChecker.dds", texture);
 
 	// Get a handle for our "myTextureSampler" uniform
-	textureID = glGetUniformLocation(programID, "myTextureSampler");
+	textureID = glGetUniformLocation(programID, "myTexture");
 
 	/* load obj file */
 	bool res = ObjLoader::Load("assets/obj/cube.obj", vertices, uvs, normals);

@@ -7,7 +7,10 @@
 #include "RenderView.hpp"
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
-
+struct SsboData
+{
+	float test = 0.5f;
+};
 class ObjScene : public ShaderScene, RenderView
 {
 private:
@@ -26,6 +29,10 @@ private:
 	/* mvp for shader */
 	GLuint matrixID;
 
+	/* SSBO */
+	SsboData* ssbo_data = new SsboData();
+	GLuint ssbo;
+
 protected:
 	void OnReloadFragmentShader() override;
 	void OnReloadVertexShader() override;
@@ -34,7 +41,7 @@ protected:
 public:
 	ObjScene();
 	ObjScene(const ObjScene&) = delete;
-
+	~ObjScene();
 	void Init() override;
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
 	

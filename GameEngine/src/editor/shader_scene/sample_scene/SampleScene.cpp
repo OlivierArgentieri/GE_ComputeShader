@@ -43,7 +43,7 @@ void SampleScene::Init()
 
 	
 
-	/* Création de la texture #1# */
+	/** create texture */
 	glGenTextures(1, &quadTextureID);
 	glBindTexture(GL_TEXTURE_2D, quadTextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -80,17 +80,12 @@ void SampleScene::Init()
 
 	glBindVertexArray(0);
 
-	/* ----- Compute Shader ----- #1# */
-	
-
+	/* Compute Shader  */
 	computeShader.LoadShader("assets/sample/compute.shader", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 
-	/* ----- Vertex shaders and Fragments shaders -----  */
-	
-
-
+	/* Vertex shaders and Fragments shaders */
 	vertexShader.LoadShader("assets/sample/vertex.shader", GL_VERTEX_SHADER);
 	fragmentShader.LoadShader("assets/sample/fragment.shader", GL_FRAGMENT_SHADER);
 
