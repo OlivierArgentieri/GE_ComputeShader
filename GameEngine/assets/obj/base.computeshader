@@ -10,11 +10,13 @@ layout(std430, binding = 3) buffer layoutName
 };
 
 void main() {
-  // gl_LocalInvocationID.xy * gl_WorkGroupID.xy == gl_GlobalInvocationID
+  // gl_LocalInvocationID -> where we are in local size (32,32)
+  // gl_WorkGroupID -> where we are in WorkGroup size (30,40,1)
+  // gl_GlobalInvocationID -> where we are in image (gl_LocalInvocationID * gl_WorkGroupID)
   ivec2 coords = ivec2(gl_GlobalInvocationID);
 
   vec4 pixel;
-  pixel = vec4(gl_WorkGroupID.x%2,.5,1.0,1.0);
+  pixel = vec4(gl_GlobalInvocationID.x%2,.5,1.0,1.0);
   
   
   imageStore(img_output, coords, pixel);
