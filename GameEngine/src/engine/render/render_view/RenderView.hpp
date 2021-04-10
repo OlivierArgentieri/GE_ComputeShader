@@ -8,7 +8,7 @@
 class RenderView
 {
 	
-private:
+protected:
 	//FrameBufferObject* fbo = FrameBufferObject::GetInstance();
 	FrameBufferObject fbo;
 

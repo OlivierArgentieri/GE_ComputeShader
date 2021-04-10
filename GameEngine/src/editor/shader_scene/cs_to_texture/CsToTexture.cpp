@@ -1,24 +1,24 @@
-#include "ObjScene.hpp"
+#include "CsToTexture.hpp"
 
 
 #include "DdsLoader.hpp"
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
-ObjScene::ObjScene() : programID(0), vertexbuffer(0), uvbuffer(0), textureID(0), texture(0), matrixID(0)
+CsToTexture::CsToTexture() : programID(0), vertexbuffer(0), uvbuffer(0), textureID(0), texture(0), matrixID(0)
 {
 }
 
-ObjScene::~ObjScene()
+CsToTexture::~CsToTexture()
 {
 	delete ssbo_data;
 }
 
-void ObjScene::Init()
+void CsToTexture::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
-	
+
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -26,7 +26,7 @@ void ObjScene::Init()
 	/**/
 	vertexShader.LoadShader("assets/obj/Transform.vertexshader", GL_VERTEX_SHADER);
 	fragmentShader.LoadShader("assets/obj/Texture.fragmentshader", GL_FRAGMENT_SHADER);
-	
+
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
 
@@ -35,15 +35,11 @@ void ObjScene::Init()
 	programID = vertexShader.GetProgramID();
 
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
-	
+
 
 	matrixID = glGetUniformLocation(programID, "MVP");
 
-	/* Texture
-	// Load the texture*/
-	DdsLoader::LoadFile("assets/obj/uvChecker.dds", baseTexture);
-	baseTextureID = glGetUniformLocation(programID, "myTexture");
-	
+	/** Texture */
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -51,7 +47,7 @@ void ObjScene::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, FrameBufferObject::SIZE_X_VIEWPORT , FrameBufferObject::SIZE_Y_VIEWPORT, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, FrameBufferObject::SIZE_X_VIEWPORT, FrameBufferObject::SIZE_Y_VIEWPORT, 0, GL_RGBA, GL_FLOAT, nullptr);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	/** SSBO  */
@@ -85,22 +81,22 @@ void ObjScene::Init()
 	// texture is our output
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	
+
 	glDispatchCompute(40, 30, 30); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
+void CsToTexture::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	ssbo_data->time += _dt;
 	ssbo_data->delta_time = _dt;
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
-	
-	
+
+
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -109,7 +105,7 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+
 	Shader::Use(fragmentShader.GetProgramID());
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 
@@ -117,15 +113,15 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(textureID, 0);
-	
+
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,(void*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -134,7 +130,7 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 
 
 
-void ObjScene::OnReloadFragmentShader()
+void CsToTexture::OnReloadFragmentShader()
 {
 	fragmentShader.CompileShader();
 
@@ -144,7 +140,7 @@ void ObjScene::OnReloadFragmentShader()
 	vertexShader.CreateShaderProgram(programID); // same program for both shader
 }
 
-void ObjScene::OnReloadVertexShader()
+void CsToTexture::OnReloadVertexShader()
 {
 	vertexShader.CompileShader();
 
@@ -154,13 +150,12 @@ void ObjScene::OnReloadVertexShader()
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 }
 
-void ObjScene::OnReloadComputeShader()
+void CsToTexture::OnReloadComputeShader()
 {
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 }
-
-void ObjScene::Update(float _dt, glm::mat4 _mvp)
+void CsToTexture::Update(float _dt, glm::mat4 _mvp)
 {
 	Render(_dt, _mvp, GetName());
 	UpdateSettingsUI();
@@ -168,12 +163,12 @@ void ObjScene::Update(float _dt, glm::mat4 _mvp)
 
 
 
-void ObjScene::Clean()
+void CsToTexture::Clean()
 {
 }
 
 
- char* ObjScene::GetName() 
+char* CsToTexture::GetName()
 {
-	return "Obj Scene";
+	return "Cs To texture";
 }

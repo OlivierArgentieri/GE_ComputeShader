@@ -25,8 +25,8 @@ void Editor::Init(int _screenWidth, int _screenHeight)
 
 	
     RegisterShaderScene(&sampleScene);
-
     RegisterShaderScene(&objScene);
+    RegisterShaderScene(&csToTextureScene);
 }
 
 void Editor::Load()

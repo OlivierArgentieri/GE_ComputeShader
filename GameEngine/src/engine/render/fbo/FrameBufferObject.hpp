@@ -3,8 +3,13 @@
 
 class FrameBufferObject
 {
-private:
-    //static FrameBufferObject* instance;
+
+public:
+    static const unsigned int SIZE_Y_VIEWPORT;
+    static const unsigned int SIZE_X_VIEWPORT;
+	
+protected:
+    
 	
     GLuint textureIdFBO;
     GLuint fbo;

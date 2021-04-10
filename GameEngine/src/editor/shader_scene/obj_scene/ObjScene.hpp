@@ -7,18 +7,20 @@
 #include "RenderView.hpp"
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
-struct SsboData
-{
-	float time = 0;
-	float delta_time = 0;
-};
+
 
 class ObjScene : public ShaderScene, RenderView
 {
+	struct SsboData
+	{
+		float time = 0;
+		float delta_time = 0;
+	};
+
 private:
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
-	std::vector< glm::vec3 > normals; // Won't be used at the moment.
+	std::vector< glm::vec3 > normals;
 
 	GLuint programID;
 

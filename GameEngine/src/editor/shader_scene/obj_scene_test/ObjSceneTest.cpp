@@ -74,7 +74,6 @@ void ObjSceneTest::OnReloadVertexShader()
 	programID = vertexShader.GetProgramID();
 	
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
-	LOG(Info) << "OK";
 }
 
 void ObjSceneTest::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
@@ -86,7 +85,7 @@ void ObjSceneTest::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(textureID, 0);
-
+	
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);

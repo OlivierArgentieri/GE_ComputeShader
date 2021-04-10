@@ -44,7 +44,7 @@ void ShaderScene::UpdateShaderEditorUI()
 		{
 			OnReloadFragmentShader();
 		}
-		ImGui::InputTextMultiline("fragmentShader", &fragmentShader.shaderBuffer[0], fragmentShader.shaderBuffer.length() * 2, ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
+		ImGui::InputTextMultiline("fragmentShader", &fragmentShader.shaderBuffer[0], fragmentShader.shaderBuffer.length()*2 , ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
 		ImGui::EndTabItem();
 	}
 

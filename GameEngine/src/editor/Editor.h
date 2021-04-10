@@ -6,6 +6,7 @@
 
 #include "ObjSceneTest.hpp"
 #include "SampleScene.hpp"
+#include "cs_to_texture/CsToTexture.hpp"
 #include "obj_scene/ObjScene.hpp"
 
 using std::vector;
@@ -42,6 +43,7 @@ private:
     /* === load shader scene objects ===*/
     ObjScene objScene;
     ObjSceneTest sampleScene;
+    CsToTexture csToTextureScene;
 
 	// current:
     int currentScene;

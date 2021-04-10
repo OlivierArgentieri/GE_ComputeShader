@@ -10,6 +10,7 @@ void RenderView::Render(float _dt, glm::mat4 _mvp, const char* _idOfView)
 	ImGui::Begin(_idOfView, &_useless, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration);
 	ImGui::TextColored(ImVec4(0.45f, 0.55f, 0.60f, 1.00f), "Render View");
 	ImGui::SetWindowPos(ImVec2(204, 18));
+	ImGui::SetWindowSize(ImVec2(350, 300));
 		std::string _childName = std::string(_idOfView) + "_render";
 		ImGui::BeginChild(_childName.c_str());
 		

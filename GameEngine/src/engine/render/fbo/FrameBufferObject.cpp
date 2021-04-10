@@ -1,14 +1,15 @@
 #include "FrameBufferObject.hpp"
 
 //FrameBufferObject* FrameBufferObject::instance = nullptr;
-
+const unsigned int FrameBufferObject::SIZE_X_VIEWPORT = 1024;
+const unsigned int FrameBufferObject::SIZE_Y_VIEWPORT = 960;
 
 FrameBufferObject::FrameBufferObject()
 {
     /* create to texture to render */
     glGenTextures(1, &textureIdFBO);
     glBindTexture(GL_TEXTURE_2D, textureIdFBO);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 768, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SIZE_X_VIEWPORT, SIZE_Y_VIEWPORT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -29,7 +30,7 @@ GLuint FrameBufferObject::CreateRenderTexture()
 
 	// start bind to fbo
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glViewport(0, 0, 1024, 768);
+    glViewport(0, 0, SIZE_X_VIEWPORT, SIZE_Y_VIEWPORT);
 
 
 	// NEED TO CLEAR 
