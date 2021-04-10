@@ -49,7 +49,6 @@ void Editor::HandleInputs()
 void Editor::Update(float _dt)
 {
     auto&& _shader_scene = shaderScenes[currentScene];
-    LOG(Info) << _dt;
 	computeMVP(_shader_scene->GetTransform().GetModelMatrix()); // compute with object model matrix, here is scene
     _shader_scene->Update(_dt, mvp);
 }

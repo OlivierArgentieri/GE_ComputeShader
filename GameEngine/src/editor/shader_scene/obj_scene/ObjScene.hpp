@@ -9,8 +9,10 @@
 #include "Transform.hpp"
 struct SsboData
 {
-	float test = 0.5f;
+	float time = 0;
+	float delta_time = 0;
 };
+
 class ObjScene : public ShaderScene, RenderView
 {
 private:
@@ -23,8 +25,8 @@ private:
 	GLuint vertexbuffer;
 	GLuint uvbuffer;
 	
-	GLuint textureID;
-	GLuint texture;
+	GLuint baseTexture;
+	GLuint baseTextureID;
 
 	/* mvp for shader */
 	GLuint matrixID;
@@ -32,6 +34,8 @@ private:
 	/* SSBO */
 	SsboData* ssbo_data = new SsboData();
 	GLuint ssbo;
+	GLuint textureID;
+	GLuint texture;
 
 protected:
 	void OnReloadFragmentShader() override;

@@ -41,7 +41,9 @@ void ObjScene::Init()
 
 	/* Texture
 	// Load the texture*/
-	//DdsLoader::LoadFile("assets/obj/uvChecker.dds", texture);
+	DdsLoader::LoadFile("assets/obj/uvChecker.dds", baseTexture);
+	baseTextureID = glGetUniformLocation(programID, "myTexture");
+	
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -52,17 +54,15 @@ void ObjScene::Init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 640, 480, 0, GL_RGBA, GL_FLOAT, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	/** SSBO see  */
-	// todo see : https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object
+	/** SSBO  */
+	// see : https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object
 
 	glGenBuffers(1, &ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(ssbo_data), ssbo_data, GL_STATIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(SsboData), ssbo_data, GL_STATIC_DRAW);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
-	
-	// Get a texture from shader
-	textureID = glGetUniformLocation(programID, "myTextureSampler");
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
+
 
 	/* load obj file */
 	bool res = ObjLoader::Load("assets/obj/cube.obj", vertices, uvs, normals);
@@ -79,48 +79,53 @@ void ObjScene::Init()
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 
+
+	// texture is our output
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glDispatchCompute(40, 30, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	
-	ssbo_data->test = _dt;
+	ssbo_data->time += _dt;
+	ssbo_data->delta_time = _dt;
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(ssbo_data), ssbo_data);
-	
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
+
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
-	// texture is our output
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(40, 30, 30);
+	glDispatchCompute(40, 30, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
-	
-	//framgentShader.Use(); // todo static method
 	Shader::Use(fragmentShader.GetProgramID());
-
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
+
 	glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(textureID, 0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 
-	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	// 2nd attribute buffer : UVs
+	
+	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,(void*)0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
 

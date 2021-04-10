@@ -39,7 +39,7 @@ int main(void)
 	
 
 	
-	/* ----- Render loop ----- #1# */
+	/* ----- Render loop -----  */
 	float _dt;
 	while (_game.isRunning)
 	{

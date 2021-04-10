@@ -40,7 +40,7 @@ void ObjSceneTest::Init()
 	// Load the texture
 	DdsLoader::LoadFile("assets/obj/UVChecker.dds", texture);
 
-	// Get a handle for our "myTextureSampler" uniform
+	// Get a handle for our "myTexture" uniform
 	textureID = glGetUniformLocation(programID, "myTexture");
 
 	/* load obj file */
