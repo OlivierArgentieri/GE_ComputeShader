@@ -13,8 +13,9 @@ class ObjScene : public ShaderScene, RenderView
 {
 	struct SsboData
 	{
-		float time = 0;
-		float delta_time = 0;
+		glm::vec4 test[6];
+		//float time = 0;
+		//float delta_time = 0;
 	};
 
 private:
