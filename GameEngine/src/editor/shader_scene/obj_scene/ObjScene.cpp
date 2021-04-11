@@ -97,7 +97,7 @@ void ObjScene::Init()
 		}
 		glGenBuffers(1, &vertexbuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &ssbo_data->test[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
 		glGenBuffers(1, &uvbuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -147,7 +147,7 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 				vertices.push_back(_vec);
 			}
 			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &ssbo_data->test[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
 			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 			glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
