@@ -24,6 +24,7 @@ private:
 	void UpdateTransformEditorUI();
 	float angle;
 	glm::vec3 pivot;
+	glm::vec3 scale;
 protected:
 	/** Shader Editor*/
 	void UpdateShaderEditorUI();
