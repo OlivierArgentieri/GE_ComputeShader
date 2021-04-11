@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderView.hpp"
 #include "ShaderScene.hpp"
-
+#include "GraphicObject.hpp"
 
 
 class CsToTexture :  public ShaderScene, RenderView
@@ -34,12 +34,8 @@ private:
 	GLuint ssbo;
 	GLuint textureID;
 
-	/** for load object */
-	std::vector< glm::vec3 > vertices;
-	std::vector< glm::vec2 > uvs;
-	std::vector< glm::vec3 > normals;
-	GLuint vertexbuffer;
-	GLuint uvbuffer;
+	/* Graphic object */
+	GraphicObject gObject;
 
 public:
 	CsToTexture();

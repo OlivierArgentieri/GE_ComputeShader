@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "Transform.hpp"
 
-ShaderScene::ShaderScene():pivot(0), angle(0), scale(1)
+ShaderScene::ShaderScene() :angle(0), pivot(1,0,0), scale(1)
 {
 }
 

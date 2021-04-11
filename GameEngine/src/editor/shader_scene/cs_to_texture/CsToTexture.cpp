@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
-CsToTexture::CsToTexture() : programID(0), vertexbuffer(0), uvbuffer(0), textureID(0), texture(0), matrixID(0)
+CsToTexture::CsToTexture() : programID(0), textureID(0), texture(0), matrixID(0)
 {
 }
 
@@ -61,14 +61,8 @@ void CsToTexture::Init()
 
 
 	/* load obj file */
-	bool res = ObjLoader::Load("assets/obj/cube.obj", vertices, uvs, normals);
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-
-	glGenBuffers(1, &uvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+	gObject.LoadFromFile("assets/obj/cube.obj");
+	gObject.ComputeBuffers();
 
 	/** Compute Shader */
 	computeShader.LoadShader("assets/obj/base.computeshader", GL_COMPUTE_SHADER);
@@ -76,8 +70,7 @@ void CsToTexture::Init()
 	computeShader.CreateShaderProgram();
 	textureID = glGetUniformLocation(programID, "mycsTexture");
 
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, fragmentShader.GetShaderID());
-
+	
 	// texture is our output
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -114,18 +107,8 @@ void CsToTexture::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(textureID, 0);
 
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	gObject.Draw();
 	glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 

@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/dds)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_view)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/graphic_object/)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sample_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene)
@@ -50,7 +51,12 @@ FILE(GLOB TRANSFORM ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform/*.*)
 
 # fbo
 FILE(GLOB FBO ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo/*.*)
+
+# render view
 FILE(GLOB RENDER_VIEW ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_view/*.*)
+
+# graphic_object
+FILE(GLOB GRAPHIC_OBJECT ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/graphic_object/*.*)
 
 # game
 FILE(GLOB EDITOR ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/*.*)
@@ -79,6 +85,7 @@ ADD_EXECUTABLE(GameEngine
 	${EDITOR}
 	${FBO}
 	${RENDER_VIEW}
+	${GRAPHIC_OBJECT}
 	${OBJ_LOADER}
 	${DDS_LOADER}
 	${TRANSFORM}
@@ -103,6 +110,7 @@ SOURCE_GROUP(src/engine/loaders/dds FILES ${DDS_LOADER})
 SOURCE_GROUP(src/engine/transform FILES ${TRANSFORM})
 SOURCE_GROUP(src/engine/render/fbo FILES ${FBO})
 SOURCE_GROUP(src/engine/render/render_view FILES ${RENDER_VIEW})
+SOURCE_GROUP(src/engine/graphic_object/ FILES ${GRAPHIC_OBJECT})
 SOURCE_GROUP(src/editor/shader_scene FILES ${SHADER_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/sample_scene FILES ${SAMPLE_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/obj_scene FILES ${OBJ_SCENE})

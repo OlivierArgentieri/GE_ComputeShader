@@ -1,7 +1,7 @@
 
 #include <ext/matrix_transform.hpp>
 #include "Transform.hpp"
-Transform::Transform() : Transform(glm::vec3(),  glm::vec3())
+Transform::Transform() : Transform(glm::vec3(),  glm::vec3(1))
 {
 }
 

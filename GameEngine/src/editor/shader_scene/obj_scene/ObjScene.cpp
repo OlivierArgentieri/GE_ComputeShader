@@ -71,7 +71,8 @@ void ObjScene::Init()
 	/* load obj file */
 	//bool res = ObjLoader::Load("assets/obj/cube.obj", vertices, uvs, normals);
 
-	/**/vertices.push_back(glm::vec3(-(transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, -(transform.scale.z / 2) + transform.position.z));
+	/**/
+	vertices.push_back(glm::vec3(-(transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, -(transform.scale.z / 2) + transform.position.z));
 	vertices.push_back(glm::vec3(-(transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, (transform.scale.z / 2) + transform.position.z));
 	vertices.push_back(glm::vec3((transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, (transform.scale.z / 2) + transform.position.z));
 
@@ -80,11 +81,11 @@ void ObjScene::Init()
 	vertices.push_back(glm::vec3(-(transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, -(transform.scale.z / 2) + transform.position.z));
 
 	uvs.push_back(glm::vec2(0, 0));
-	uvs.push_back(glm::vec2(0, 1));
+	uvs.push_back(glm::vec2(1, 0));
 	uvs.push_back(glm::vec2(1, 1));
 
 	uvs.push_back(glm::vec2(1, 1));
-	uvs.push_back(glm::vec2(1, 0));
+	uvs.push_back(glm::vec2(0, 1));
 	uvs.push_back(glm::vec2(0, 0));
 	
 	glGenBuffers(1, &vertexbuffer);
@@ -100,7 +101,7 @@ void ObjScene::Init()
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 	Shader::Use(computeShader.GetProgramID());
-	glDispatchCompute(1, 1, 1);
+	glDispatchCompute(30, 40, 1);
 	//
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	//textureID = glGetUniformLocation(programID, "mycsTexture");
@@ -123,15 +124,13 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	//ssbo_data->time += _dt;
 	//ssbo_data->delta_time = _dt;
 
-	
-	
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
 	
 	
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
-	glDispatchCompute(1, 1, 1);
+	glDispatchCompute(30, 40, 1);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -150,11 +149,9 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 
 	//ssbo_data = (SsboData*) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 	
-	
 	//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	//ssbo_data = (SsboData*) glMapBufferRange(ssbo, 0, sizeof(SsboData), GL_MAP_READ_BIT);
 	//glGetBufferSubData(ssbo, 0, sizeof(SsboData), &ssbo_data);
-	
 
 	/*glBindTexture(GL_TEXTURE_2D, texture);
 	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
