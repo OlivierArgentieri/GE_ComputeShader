@@ -18,6 +18,8 @@ void ObjScene::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
+	pivot = glm::vec3(1, 1, 0);
+	angle = glm::radians(90.0f);
 
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);

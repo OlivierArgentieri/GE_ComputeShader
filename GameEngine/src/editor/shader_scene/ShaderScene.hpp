@@ -19,7 +19,7 @@ protected:
 	ShaderScene();
 	void UpdateSettingsUI();
 
-private:
+protected:
 	/** Transform Editor */
 	void UpdateTransformEditorUI();
 	float angle;

@@ -2,9 +2,10 @@
 #include "RenderView.hpp"
 #include "ShaderScene.hpp"
 #include "GraphicObject.hpp"
+#include "RenderTexture.hpp"
 
 
-class CsToTexture :  public ShaderScene, RenderView
+class CsToTexture :  public ShaderScene, RenderView, RenderTexture
 {
 	struct SsboData
 	{
@@ -37,6 +38,8 @@ private:
 	/* Graphic object */
 	GraphicObject gObject;
 
+protected:
+	GLuint GetTextureToRender() override { return texture; }
 public:
 	CsToTexture();
 	CsToTexture(const CsToTexture&) = delete;

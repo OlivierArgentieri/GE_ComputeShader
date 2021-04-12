@@ -20,14 +20,16 @@ void RayTracing::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
+	pivot = glm::vec3(1, 1, 0);
+	angle = glm::radians(90.0f);
 
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
 	/**/
-	vertexShader.LoadShader("assets/cs_in_out_texture/Transform.vertexshader", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/cs_in_out_texture/Texture.fragmentshader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/raytracing/Transform.vertexshader", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/raytracing/Texture.fragmentshader", GL_FRAGMENT_SHADER);
 
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -60,16 +62,16 @@ void RayTracing::Init()
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
 	/* load obj file */
-	gObject.LoadFromFile("assets/obj/cube.obj");
+	gObject.LoadFromFile("assets/raytracing/cube.obj");
 	gObject.ComputeBuffers();
 
 	/** Compute Shader */
-	computeShader.LoadShader("assets/cs_in_out_texture/cs_in_out_texture.computeshader", GL_COMPUTE_SHADER);
+	computeShader.LoadShader("assets/raytracing/raytracing.computeshader", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 	textureID = glGetUniformLocation(programID, "csRayTracingTexture");
 
-	/** load*/
+	/** load */
 	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	/** Determining the work group size */
@@ -131,6 +133,7 @@ void RayTracing::OnReloadComputeShader()
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 }
+
 void RayTracing::Update(float _dt, glm::mat4 _mvp)
 {
 	RenderView::Render(_dt, _mvp, GetName());

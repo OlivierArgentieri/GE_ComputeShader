@@ -18,14 +18,16 @@ void CsToTexture::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
-
+	pivot = glm::vec3(1, 1, 0);
+	angle = glm::radians(90.0f);
+	
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
 	/**/
-	vertexShader.LoadShader("assets/obj/Transform.vertexshader", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/obj/Texture.fragmentshader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/cs_to_texture/Transform.vertexshader", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/cs_to_texture/Texture.fragmentshader", GL_FRAGMENT_SHADER);
 
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -65,7 +67,7 @@ void CsToTexture::Init()
 	gObject.ComputeBuffers();
 
 	/** Compute Shader */
-	computeShader.LoadShader("assets/obj/base.computeshader", GL_COMPUTE_SHADER);
+	computeShader.LoadShader("assets/cs_to_texture/base.computeshader", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 	textureID = glGetUniformLocation(programID, "mycsTexture");
@@ -75,7 +77,7 @@ void CsToTexture::Init()
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
-	glDispatchCompute(40, 30, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
+	glDispatchCompute(30, 40, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -140,11 +142,10 @@ void CsToTexture::OnReloadComputeShader()
 }
 void CsToTexture::Update(float _dt, glm::mat4 _mvp)
 {
-	Render(_dt, _mvp, GetName());
+	RenderView::Render(_dt, _mvp, GetName());
+	RenderTexture::Render();
 	UpdateSettingsUI();
 }
-
-
 
 void CsToTexture::Clean()
 {

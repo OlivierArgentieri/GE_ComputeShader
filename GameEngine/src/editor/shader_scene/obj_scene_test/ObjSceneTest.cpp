@@ -11,9 +11,10 @@ ObjSceneTest::ObjSceneTest() : programID(0), textureID(0), texture(0), matrixID(
 
 void ObjSceneTest::Init()
 {
-	//gObject.transform.SetScale(glm::vec3(1, 1, 1));
-	//gObject.transform.SetPosition(glm::vec3(0, 0, 0));
-	gObject.transform.SetRotation(45, glm::vec3(1, 1, 0));
+	transform.SetScale(glm::vec3(1, 1, 1));
+	transform.SetPosition(glm::vec3(0, 0, 0));
+	pivot = glm::vec3(1, 1, 0);
+	angle = glm::radians(90.0f);
 
 
 

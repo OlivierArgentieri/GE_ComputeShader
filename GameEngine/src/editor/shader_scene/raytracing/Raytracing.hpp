@@ -20,7 +20,7 @@ private:
 	void OnReloadComputeShader() override;
 
 private:
-	/* mvp for shader */
+	/** mvp for shader */
 	GLuint matrixID;
 	
 	GLuint programID;
@@ -29,12 +29,12 @@ private:
 	GLuint locRadius;
 	GLuint csBufferIndex;
 
-	/* SSBO */
+	/** SSBO */
 	SsboData* ssbo_data = new SsboData();
 	GLuint ssbo;
 	GLuint textureID;
 
-	/* Graphic object */
+	/** Graphic object */
 	GraphicObject gObject;
 
 	/** raytracing */
