@@ -6,12 +6,13 @@
 
 
 #include "GraphicObject.hpp"
+#include "RenderTexture.hpp"
 #include "RenderView.hpp"
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
 
 
-class RayTracingSecond : public ShaderScene, RenderView
+class RayTracingSecond : public ShaderScene, RenderView, RenderTexture
 {
 	struct SsboData
 	{
@@ -39,8 +40,8 @@ private:
 	/* SSBO */
 	SsboData* ssbo_data = new SsboData();
 	GLuint ssbo;
-	GLuint textureID;
-	GLuint texture;
+	GLuint outTextureID;
+	GLuint outTexture;
 
 	GraphicObject gObject;
 
@@ -48,7 +49,7 @@ protected:
 	void OnReloadFragmentShader() override;
 	void OnReloadVertexShader() override;
 	void OnReloadComputeShader() override;
-
+	GLuint GetTextureToRender() override { return outTexture;}
 public:
 	RayTracingSecond();
 	RayTracingSecond(const RayTracingSecond&) = delete;

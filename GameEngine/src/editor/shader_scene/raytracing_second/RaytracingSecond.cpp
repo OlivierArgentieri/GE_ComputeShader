@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
-RayTracingSecond::RayTracingSecond() : programID(0), vertexbuffer(0), uvbuffer(0), textureID(0), texture(0), matrixID(0)
+RayTracingSecond::RayTracingSecond() : programID(0), vertexbuffer(0), uvbuffer(0), outTextureID(0), outTexture(0), matrixID(0)
 {
 }
 
@@ -42,8 +42,8 @@ void RayTracingSecond::Init()
 	matrixID = glGetUniformLocation(programID, "MVP");
 
 	/** Texture */
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glGenTextures(1, &outTexture);
+	glBindTexture(GL_TEXTURE_2D, outTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -70,12 +70,12 @@ void RayTracingSecond::Init()
 	computeShader.LoadShader("assets/raytracing_second/raytracing_second.computeshader", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
-	textureID = glGetUniformLocation(programID, "mycsTexture");
+	outTextureID = glGetUniformLocation(programID, "mycsTexture");
 
 
 	// texture is our output
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glBindTexture(GL_TEXTURE_2D, outTexture);
+	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	glDispatchCompute(30, 40, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -96,7 +96,7 @@ void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
 	//glBindTexture(GL_TEXTURE_2D, texture);
-	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glDispatchCompute(30, 40, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -121,8 +121,8 @@ void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp
 
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(textureID, 0);
+	glBindTexture(GL_TEXTURE_2D, outTexture);
+	glUniform1i(outTextureID, 0);
 
 	gObject.Draw();
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -160,7 +160,8 @@ void RayTracingSecond::OnReloadComputeShader()
 
 void RayTracingSecond::Update(float _dt, glm::mat4 _mvp)
 {
-	Render(_dt, _mvp, GetName());
+	RenderView::Render(_dt, _mvp, GetName());
+	RenderTexture::Render();
 	UpdateSettingsUI();
 }
 
