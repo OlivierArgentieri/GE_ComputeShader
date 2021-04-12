@@ -1,20 +1,22 @@
-#include "CsToTexture.hpp"
+#include "Raytracing.hpp"
 
 
 #include "DdsLoader.hpp"
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
-CsToTexture::CsToTexture() : programID(0), textureID(0), texture(0), matrixID(0)
+// todo see : https://antongerdelan.net/opengl/compute.html
+
+RayTracing::RayTracing() : matrixID(0), programID(0), inTexture(0), outTexture(0), textureID(0)
 {
 }
 
-CsToTexture::~CsToTexture()
+RayTracing::~RayTracing()
 {
 	delete ssbo_data;
 }
 
-void CsToTexture::Init()
+void RayTracing::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
@@ -24,8 +26,8 @@ void CsToTexture::Init()
 	glBindVertexArray(VertexArrayID);
 
 	/**/
-	vertexShader.LoadShader("assets/obj/Transform.vertexshader", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/obj/Texture.fragmentshader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/cs_in_out_texture/Transform.vertexshader", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/cs_in_out_texture/Texture.fragmentshader", GL_FRAGMENT_SHADER);
 
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -36,84 +38,75 @@ void CsToTexture::Init()
 
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 
-
 	matrixID = glGetUniformLocation(programID, "MVP");
 
 	/** Texture */
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	// dimensions of the image
+	
+	glGenTextures(1, &outTexture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, outTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, FrameBufferObject::SIZE_X_VIEWPORT, FrameBufferObject::SIZE_Y_VIEWPORT, 0, GL_RGBA, GL_FLOAT, nullptr);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, tex_w, tex_h, 0, GL_RGBA, GL_FLOAT,0);
+	
 	/** SSBO  */
-	// see : https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object
-
 	glGenBuffers(1, &ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(SsboData), ssbo_data, GL_STATIC_DRAW);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
-
 	/* load obj file */
 	gObject.LoadFromFile("assets/obj/cube.obj");
 	gObject.ComputeBuffers();
 
 	/** Compute Shader */
-	computeShader.LoadShader("assets/obj/base.computeshader", GL_COMPUTE_SHADER);
+	computeShader.LoadShader("assets/cs_in_out_texture/cs_in_out_texture.computeshader", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
-	textureID = glGetUniformLocation(programID, "mycsTexture");
+	textureID = glGetUniformLocation(programID, "csRayTracingTexture");
 
-	
-	// texture is our output
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	/** load*/
+	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
-	glDispatchCompute(40, 30, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
+	/** Determining the work group size */
+	glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void CsToTexture::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
+void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
-	ssbo_data->time += _dt;
-	ssbo_data->delta_time = _dt;
+	//ssbo_data->time += _dt;
+	//ssbo_data->delta_time = _dt;
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
 
-
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
-	//glBindTexture(GL_TEXTURE_2D, texture);
-	glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(40, 30, 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
+	glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	
 	Shader::Use(fragmentShader.GetProgramID());
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 
-
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, outTexture);
 	glUniform1i(textureID, 0);
 
 	gObject.Draw();
+	
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
 
-
-
-void CsToTexture::OnReloadFragmentShader()
+void RayTracing::OnReloadFragmentShader()
 {
 	fragmentShader.CompileShader();
 
@@ -123,7 +116,7 @@ void CsToTexture::OnReloadFragmentShader()
 	vertexShader.CreateShaderProgram(programID); // same program for both shader
 }
 
-void CsToTexture::OnReloadVertexShader()
+void RayTracing::OnReloadVertexShader()
 {
 	vertexShader.CompileShader();
 
@@ -133,25 +126,23 @@ void CsToTexture::OnReloadVertexShader()
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 }
 
-void CsToTexture::OnReloadComputeShader()
+void RayTracing::OnReloadComputeShader()
 {
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 }
-void CsToTexture::Update(float _dt, glm::mat4 _mvp)
+void RayTracing::Update(float _dt, glm::mat4 _mvp)
 {
-	Render(_dt, _mvp, GetName());
+	RenderView::Render(_dt, _mvp, GetName());
+	RenderTexture::Render();
 	UpdateSettingsUI();
 }
 
-
-
-void CsToTexture::Clean()
+void RayTracing::Clean()
 {
 }
 
-
-char* CsToTexture::GetName()
+char* RayTracing::GetName()
 {
-	return "Cs To texture";
+	return "Test raytracing";
 }

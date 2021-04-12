@@ -7,7 +7,6 @@
 
 LogConfig LOG_CONFIG = {};
 
-//GLFWwindow* window;
 int main(void)
 {
 	// Initialise GLFW

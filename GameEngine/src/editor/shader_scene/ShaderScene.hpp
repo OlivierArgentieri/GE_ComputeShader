@@ -25,6 +25,7 @@ private:
 	float angle;
 	glm::vec3 pivot;
 	glm::vec3 scale;
+
 protected:
 	/** Shader Editor*/
 	void UpdateShaderEditorUI();
@@ -33,6 +34,7 @@ protected:
 	virtual void OnReloadComputeShader();
 
 public:
+	virtual ~ShaderScene() = default;
 	virtual void Init() =0;
 	virtual void Update(float _dt, glm::mat4 _mvp) =0;
 	virtual void Clean() =0;

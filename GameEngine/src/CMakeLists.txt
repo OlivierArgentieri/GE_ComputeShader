@@ -13,12 +13,13 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/loaders/dds)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/transform)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_view)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_texture)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/graphic_object/)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sample_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/cs_to_teture)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/raytracing)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/)
 
 # Files
@@ -55,6 +56,9 @@ FILE(GLOB FBO ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/fbo/*.*)
 # render view
 FILE(GLOB RENDER_VIEW ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_view/*.*)
 
+# render texture
+FILE(GLOB RENDER_TEXTURE ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_texture/*.*)
+
 # graphic_object
 FILE(GLOB GRAPHIC_OBJECT ${CMAKE_SOURCE_DIR}/GameEngine/src/engine/graphic_object/*.*)
 
@@ -67,6 +71,7 @@ FILE(GLOB SAMPLE_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sa
 FILE(GLOB OBJ_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene/*.*)
 FILE(GLOB OBJ_SCENE_TEST ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test/*.*)
 FILE(GLOB CS_TO_TEXTURE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/cs_to_texture/*.*)
+FILE(GLOB RAYTRACING ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/raytracing/*.*)
 
 
 # ======== loaders ========
@@ -85,6 +90,7 @@ ADD_EXECUTABLE(GameEngine
 	${EDITOR}
 	${FBO}
 	${RENDER_VIEW}
+	${RENDER_TEXTURE}
 	${GRAPHIC_OBJECT}
 	${OBJ_LOADER}
 	${DDS_LOADER}
@@ -94,6 +100,7 @@ ADD_EXECUTABLE(GameEngine
 	${OBJ_SCENE}
 	${OBJ_SCENE_TEST}
 	${CS_TO_TEXTURE}
+	${RAYTRACING}
 )
 TARGET_LINK_LIBRARIES(GameEngine glfw3 opengl32 User32 Gdi32 Shell32 glew32s)
 
@@ -110,12 +117,14 @@ SOURCE_GROUP(src/engine/loaders/dds FILES ${DDS_LOADER})
 SOURCE_GROUP(src/engine/transform FILES ${TRANSFORM})
 SOURCE_GROUP(src/engine/render/fbo FILES ${FBO})
 SOURCE_GROUP(src/engine/render/render_view FILES ${RENDER_VIEW})
+SOURCE_GROUP(src/engine/render/render_texture FILES ${RENDER_TEXTURE})
 SOURCE_GROUP(src/engine/graphic_object/ FILES ${GRAPHIC_OBJECT})
 SOURCE_GROUP(src/editor/shader_scene FILES ${SHADER_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/sample_scene FILES ${SAMPLE_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/obj_scene FILES ${OBJ_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/obj_scene_test FILES ${OBJ_SCENE_TEST})
 SOURCE_GROUP(src/editor/shader_scene/cs_to_texture FILES ${CS_TO_TEXTURE})
+SOURCE_GROUP(src/editor/shader_scene/raytracing FILES ${RAYTRACING})
 SOURCE_GROUP(src/editor/ FILES ${EDITOR})
 
 # Compile option

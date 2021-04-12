@@ -3,8 +3,8 @@
 #include <vector>
 #include <ext/matrix_float4x4.hpp>
 
-
 #include "ObjSceneTest.hpp"
+#include "Raytracing.hpp"
 #include "SampleScene.hpp"
 #include "cs_to_texture/CsToTexture.hpp"
 #include "obj_scene/ObjScene.hpp"
@@ -44,6 +44,7 @@ private:
     ObjScene objScene;
     ObjSceneTest sampleScene;
     CsToTexture csToTextureScene;
+    RayTracing csInOutTexture;
 
 	// current:
     int currentScene;
