@@ -7,6 +7,7 @@ layout(std430, binding = 3) buffer layoutName
 {
     float time;
     float delta_time;
+	float temp;
 };
 
 void main() {
@@ -16,8 +17,8 @@ void main() {
   ivec2 coords = ivec2(gl_GlobalInvocationID);
 
   vec4 pixel;
-  pixel = vec4(gl_GlobalInvocationID.x%2, gl_GlobalInvocationID.y%2 ,.25,1.0);
-  
+  float colorx = (int(time)%11)*0.1; // get time from SSBO, cast to int, limit at 11, clamp01 and update x color;
+  pixel = vec4(colorx, gl_GlobalInvocationID.y%2 ,.25,1.0);
   
   imageStore(img_output, coords, pixel);
 }

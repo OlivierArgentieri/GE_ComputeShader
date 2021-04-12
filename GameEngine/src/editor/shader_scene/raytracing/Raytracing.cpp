@@ -75,7 +75,7 @@ void RayTracing::Init()
 	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	/** Determining the work group size */
-	glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
+	glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
@@ -91,9 +91,10 @@ void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
 	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-
 	glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	
 	
 	Shader::Use(fragmentShader.GetProgramID());
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
@@ -105,7 +106,6 @@ void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	gObject.Draw();
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
 
 void RayTracing::OnReloadFragmentShader()

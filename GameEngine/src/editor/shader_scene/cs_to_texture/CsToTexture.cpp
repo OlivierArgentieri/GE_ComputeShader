@@ -101,6 +101,20 @@ void CsToTexture::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
+	/** debug value of shader in console */
+	// uncomment if you want to test 
+	/*int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "layoutName");
+	if (_index != GL_INVALID_INDEX)
+	{
+		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 3);
+		memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		if (ssbo_data)
+		{
+			LOG(Info) << ssbo_data->temp;
+		}
+	}*/
+
 	Shader::Use(fragmentShader.GetProgramID());
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 
@@ -111,6 +125,7 @@ void CsToTexture::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 
 	gObject.Draw();
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
 
 

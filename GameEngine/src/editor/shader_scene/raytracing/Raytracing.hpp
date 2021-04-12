@@ -11,6 +11,7 @@ class RayTracing :  public ShaderScene, RenderView, RenderTexture
 	{
 		float time = 0;
 		float delta_time = 0;
+		float temp = 0;
 	};
 
 private:

@@ -11,6 +11,7 @@ class CsToTexture :  public ShaderScene, RenderView, RenderTexture
 	{
 		float time = 0;
 		float delta_time = 0;
+		float temp = 0;
 	};
 private:
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
