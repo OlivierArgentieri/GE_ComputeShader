@@ -52,13 +52,13 @@ void RayTracing::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, tex_w, tex_h, 0, GL_RGBA, GL_FLOAT,0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, FrameBufferObject::SIZE_X_VIEWPORT, FrameBufferObject::SIZE_Y_VIEWPORT, 0, GL_RGBA, GL_FLOAT,nullptr);
 	
-	/** SSBO  */
+	/** SSBO  */	
 	glGenBuffers(1, &ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(SsboData), ssbo_data, GL_STATIC_DRAW);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
 	/* load obj file */
@@ -75,15 +75,15 @@ void RayTracing::Init()
 	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	/** Determining the work group size */
-	glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1);
+	glDispatchCompute(40, 30, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
 
 void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
-	//ssbo_data->time += _dt;
-	//ssbo_data->delta_time = _dt;
+	ssbo_data->time += _dt;
+	ssbo_data->delta_time = _dt;
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
@@ -91,21 +91,34 @@ void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
 	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1);
+	glDispatchCompute(40, 30, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	
-	
+
+	/** update SSBO value  */
+	int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "layoutName");
+	if (_index != GL_INVALID_INDEX)
+	{
+		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 5);
+		memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		/*if (ssbo_data)
+		{
+			LOG(Info) << ssbo_data->temp;
+		}*/
+	}
+
 	Shader::Use(fragmentShader.GetProgramID());
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
+
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, outTexture);
 	glUniform1i(textureID, 0);
 
 	gObject.Draw();
-	
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
 
 void RayTracing::OnReloadFragmentShader()

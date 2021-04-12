@@ -1,14 +1,21 @@
 #include "Editor.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 
 #include "imgui.h"
 #include "RenderView.hpp"
 #include "ShaderScene.hpp"
 #include "../engine/loaders/obj/ObjLoader.hpp"
 
+
+/* map of SSBO ID *
+
+ | Cs_ToTexture  | 7 |
+ | ObjScene      | 8 |
+ | RayTracing    | 5 |
+ | RayTracing2   | 6 |
+ 
+ */
 
 Editor::Editor() : isRunning(false), windowWidth(0), windowHeight(0), currentScene(0)
 {
@@ -26,9 +33,10 @@ void Editor::Init(int _screenWidth, int _screenHeight)
 	
     RegisterShaderScene(&sampleScene);
     RegisterShaderScene(&objScene);
-    RegisterShaderScene(&csInOutTexture);
-
     RegisterShaderScene(&csToTextureScene);
+    RegisterShaderScene(&csRayTracing);
+    RegisterShaderScene(&csRayTracing2);
+
 }
 
 void Editor::Load()
@@ -73,8 +81,12 @@ void Editor::UpdateUI()
     ImGui::SetWindowSize(ImVec2(windowWidth*0.2,windowHeight*0.2));
 
     ImGui::TextColored(ImVec4(0.45f, 0.55f, 0.60f, 1.00f), "Scenes");
+	ImGui::PushItemWidth(-1);
+    ImGui::ListBox(" ", &currentScene, shaderScenesNames.data(), shaderScenes.size(), 9);
+    
 
-    ImGui::ListBox(" ", &currentScene, shaderScenesNames.data(), shaderScenes.size(), 4);
+   // ImGui::PushItemWidth(-1);
+
     ImGui::End();
 }
 

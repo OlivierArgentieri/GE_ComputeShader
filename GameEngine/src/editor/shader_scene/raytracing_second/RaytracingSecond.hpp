@@ -4,17 +4,20 @@
 #include <ext/vector_float3.hpp>
 
 
+
+#include "GraphicObject.hpp"
 #include "RenderView.hpp"
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
 
 
-class ObjScene : public ShaderScene, RenderView
+class RayTracingSecond : public ShaderScene, RenderView
 {
 	struct SsboData
 	{
-		glm::vec4 vertices[6];
 		float time = 0;
+		float delta_time = 0;
+		float temp=0;
 	};
 
 private:
@@ -39,15 +42,17 @@ private:
 	GLuint textureID;
 	GLuint texture;
 
+	GraphicObject gObject;
+
 protected:
 	void OnReloadFragmentShader() override;
 	void OnReloadVertexShader() override;
 	void OnReloadComputeShader() override;
 
 public:
-	ObjScene();
-	ObjScene(const ObjScene&) = delete;
-	~ObjScene();
+	RayTracingSecond();
+	RayTracingSecond(const RayTracingSecond&) = delete;
+	~RayTracingSecond();
 	void Init() override;
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
 	

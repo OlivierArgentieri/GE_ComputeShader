@@ -62,26 +62,11 @@ void ObjScene::Init()
 	/**/glGenBuffers(1, &ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(SsboData), ssbo_data, GL_DYNAMIC_DRAW);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
-	// use cs buffer as vertices
-	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
-	//glBindBuffer(GL_ARRAY_BUFFER, ssbo);
-
-
-	/* load obj file */
-	//bool res = ObjLoader::Load("assets/obj/cube.obj", vertices, uvs, normals);
-
-	/*
-	vertices.push_back(glm::vec3(-(transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, -(transform.scale.z / 2) + transform.position.z));
-	vertices.push_back(glm::vec3(-(transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, (transform.scale.z / 2) + transform.position.z));
-	vertices.push_back(glm::vec3((transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, (transform.scale.z / 2) + transform.position.z));
-
-	vertices.push_back(glm::vec3((transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, (transform.scale.z / 2) + transform.position.z));
-	vertices.push_back(glm::vec3((transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, -(transform.scale.z / 2) + transform.position.z));
-	vertices.push_back(glm::vec3(-(transform.scale.x / 2) + transform.position.x, (transform.scale.y / 2) + transform.position.y, -(transform.scale.z / 2) + transform.position.z));*/
-
+	// use cs buffer as vertices buffer
+	
 	uvs.push_back(glm::vec2(0, 0));
 	uvs.push_back(glm::vec2(1, 0));
 	uvs.push_back(glm::vec2(1, 1));
@@ -93,7 +78,7 @@ void ObjScene::Init()
 	if (ssbo_data)
 	{
 		// convert vec4 -> vec3
-		for (glm::vec3 _vec : ssbo_data->test)
+		for (glm::vec3 _vec : ssbo_data->vertices)
 		{
 			vertices.push_back(_vec);
 		}
@@ -134,17 +119,17 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 
 	//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(SsboData), ssbo_data, GL_DYNAMIC_COPY);
 
-	 // retrieve data from cs //
+	/** update SSBO value  */
 	int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "layoutName");
 	if (_index != GL_INVALID_INDEX)
 	{
-		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 3);
+		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 8);
 		memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		if (ssbo_data)
 		{
 			vertices.clear();
-			for (glm::vec3 _vec : ssbo_data->test)
+			for (glm::vec3 _vec : ssbo_data->vertices)
 			{
 				vertices.push_back(_vec);
 			}

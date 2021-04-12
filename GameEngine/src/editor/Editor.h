@@ -5,6 +5,7 @@
 
 #include "ObjSceneTest.hpp"
 #include "Raytracing.hpp"
+#include "RaytracingSecond.hpp"
 #include "SampleScene.hpp"
 #include "cs_to_texture/CsToTexture.hpp"
 #include "obj_scene/ObjScene.hpp"
@@ -44,7 +45,8 @@ private:
     ObjScene objScene;
     ObjSceneTest sampleScene;
     CsToTexture csToTextureScene;
-    RayTracing csInOutTexture;
+    RayTracing csRayTracing;
+    RayTracingSecond csRayTracing2;
 
 	// current:
     int currentScene;
