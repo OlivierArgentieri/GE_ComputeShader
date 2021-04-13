@@ -92,11 +92,10 @@ void RayTracingSecond::Init()
 
 	for(int i =0; i< 512 ; i++)
 	{
-		ssbo_data->vertices[i] = glm::vec4(0);
-		ssbo_data->debug[i] = -1;
+		ssbo_data->vertices[i] = glm::vec4(glm::mix(-2.7, 2.7, ((i*1.0f) / 512.0f)),2,0,0);
+		//ssbo_data->vertices[i] = glm::vec4(0);
+		//ssbo_data->debug[i] = -1;
 	}
-
-	
 }
 
 void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
@@ -126,26 +125,28 @@ void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp
 		/**/if (ssbo_data)
 		{
 			//LOG(Info) << ssbo_data->debug;
-
+			vertices.clear();
+			for (int i = 0; i < 512; i++)
+			{
+				vertices.emplace_back(ssbo_data->vertices[i].x, ssbo_data->vertices[i].y, ssbo_data->vertices[i].z);
+			}
 			/*glGenBuffers(1, &vbo);*/
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(SsboData), &ssbo_data->vertices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 			
 			// use fragment shader /vertex shader
 			Shader::Use(fragmentShader.GetProgramID());
 			glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
 			glUniform3fv(color_location, 1, &testColor[0]);
+
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			glPointSize(5);
+			glDrawArrays(GL_POINTS, 0, 512);/**/
 		}
 	}
-
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	
-	glPointSize(10);
-	glDrawArrays(GL_POINTS, 0, 512);/**/
-
-	
 }
 
 
@@ -181,11 +182,12 @@ void RayTracingSecond::UpdateSettingsUI()
 	ShaderScene::UpdateSettingsUI();
 	ImGui::ColorEdit3("test color", &testColor[0]);
 
+	/**/if (!ssbo_data) return;
 	static string _temp;
 	for (int i = 0; i < 512; i++)
 	{
 		_temp = "particuleID: " + std::to_string(i);
-		ImGui::InputFloat3(_temp.c_str(), glm::value_ptr(ssbo_data->vertices[i]));
+		ImGui::InputFloat3(_temp.c_str(), &ssbo_data->vertices[i].x);
 	}
 	
 }

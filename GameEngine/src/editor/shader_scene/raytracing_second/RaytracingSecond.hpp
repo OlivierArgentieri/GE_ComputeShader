@@ -9,6 +9,30 @@
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
 
+struct vec3
+{
+	union
+	{
+		float x;
+		float r;
+	};
+
+	union
+	{
+		float y;
+		float g;
+	};
+
+	union
+	{
+		float z;
+		float b;
+	};
+
+	vec3(float _value) : x(0), y(0), z(0){}
+	vec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z){}
+	vec3() :vec3(0) {};
+};
 
 class RayTracingSecond : public ShaderScene, RenderView
 {
@@ -21,10 +45,10 @@ class RayTracingSecond : public ShaderScene, RenderView
 	struct SsboData
 	{
 		glm::vec4 vertices[512];
-		float debug[512];
+		//float debug[512];
 		float delta_time=0;
-		float noise=0;
-		float temp=0;
+		//float noise=0;
+		//float temp=0;
 	};
 
 	std::vector<Particle> particles;
