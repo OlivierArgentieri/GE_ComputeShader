@@ -52,8 +52,8 @@ void main() {
   //debug = gl_WorkGroupSize.y;
   
   
-  noise=gold_noise(gl_LocalInvocationID.xy, gl_LocalInvocationID.x+time);
-  p[gl_LocalInvocationID.x] = vec3(cos(noise*100), sin(noise*100), 1);
+  //noise=gold_noise(gl_LocalInvocationID.xy, gl_LocalInvocationID.x+time);
+  p[gl_LocalInvocationID.x] = p[gl_LocalInvocationID.x];
   //temp = gl_NumWorkGroups.x;
   //temp = gl_GlobalInvocationID.x;
   //temp = gl_NumWorkGroups.x;

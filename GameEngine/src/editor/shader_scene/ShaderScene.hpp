@@ -17,7 +17,7 @@ protected:
 	Shader computeShader;
 	Transform transform;
 	ShaderScene();
-	void UpdateSettingsUI();
+	virtual void UpdateSettingsUI();
 
 protected:
 	/** Transform Editor */

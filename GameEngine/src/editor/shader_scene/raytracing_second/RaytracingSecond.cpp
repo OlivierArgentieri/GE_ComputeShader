@@ -1,5 +1,8 @@
 #include "RaytracingSecond.hpp"
 
+#include <gtc/type_ptr.inl>
+
+
 
 #include "DdsLoader.hpp"
 #include "imgui.h"
@@ -26,19 +29,19 @@ void RayTracingSecond::Init()
 	glBindVertexArray(vao);
 	
 	
-	/*/#1#/ create vertices#1#*/
+	/*/#1#/ create vertices#1#
 	vertices.push_back(glm::vec3(0,0,0));
 	vertices.push_back(glm::vec3(0.5,0,0));
 	vertices.push_back(glm::vec3(0.6,0,0));
 	vertices.push_back(glm::vec3(0.7,0,0));
 	vertices.push_back(glm::vec3(0.8,0,0));
 	vertices.push_back(glm::vec3(0.9,0,0));
-	vertices.push_back(glm::vec3(1,0,0));
+	vertices.push_back(glm::vec3(1,0,0));*/
 	
 	/*#1#/ create vbo#1#*/
 	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 	
 	/* load shaders  */
 	vertexShader.LoadShader("assets/raytracing_second/Transform.vertexshader", GL_VERTEX_SHADER);
@@ -52,7 +55,9 @@ void RayTracingSecond::Init()
 	programID = vertexShader.GetProgramID();
 
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
+	color_location = glGetUniformLocation(fragmentShader.GetProgramID(), "incolor");
 
+	
 	GLint position_attribute = glGetAttribLocation(vertexShader.GetProgramID(), "inVecPosition");
 	glVertexAttribPointer(position_attribute, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(position_attribute);
@@ -129,6 +134,7 @@ void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp
 			// use fragment shader /vertex shader
 			Shader::Use(fragmentShader.GetProgramID());
 			glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
+			glUniform3fv(color_location, 1, &testColor[0]);
 		}
 	}
 
@@ -138,6 +144,8 @@ void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp
 	
 	glPointSize(10);
 	glDrawArrays(GL_POINTS, 0, 512);/**/
+
+	
 }
 
 
@@ -168,10 +176,23 @@ void RayTracingSecond::OnReloadComputeShader()
 	computeShader.CreateShaderProgram();
 }
 
+void RayTracingSecond::UpdateSettingsUI()
+{
+	ShaderScene::UpdateSettingsUI();
+	ImGui::ColorEdit3("test color", &testColor[0]);
+
+	static string _temp;
+	for (int i = 0; i < 512; i++)
+	{
+		_temp = "particuleID: " + std::to_string(i);
+		ImGui::InputFloat3(_temp.c_str(), glm::value_ptr(ssbo_data->vertices[i]));
+	}
+	
+}
+
 void RayTracingSecond::Update(float _dt, glm::mat4 _mvp)
 {
-	RenderView::Render(_dt, _mvp, GetName());
-	RenderTexture::Render();
+	Render(_dt, _mvp, GetName());
 	UpdateSettingsUI();
 }
 

@@ -10,8 +10,14 @@
 #include "Transform.hpp"
 
 
-class RayTracingSecond : public ShaderScene, RenderView, RenderTexture
+class RayTracingSecond : public ShaderScene, RenderView
 {
+	struct Particle
+	{
+		glm::vec4 pos;
+		glm::vec4 vel;
+	};
+	
 	struct SsboData
 	{
 		glm::vec4 vertices[512];
@@ -19,13 +25,6 @@ class RayTracingSecond : public ShaderScene, RenderView, RenderTexture
 		float delta_time=0;
 		float noise=0;
 		float temp=0;
-	};
-
-	struct Particle
-	{
-		glm::vec4 pos;
-		glm::vec4 vel;
-		glm::vec4 acc;
 	};
 
 	std::vector<Particle> particles;
@@ -49,12 +48,14 @@ private:
 	GLuint outTexture;
 
 	GraphicObject gObject;
+	glm::vec3 testColor = glm::vec3(0.45f, 0.55f, 0.60f);
+	GLint color_location;
 
 protected:
 	void OnReloadFragmentShader() override;
 	void OnReloadVertexShader() override;
 	void OnReloadComputeShader() override;
-	GLuint GetTextureToRender() override { return outTexture;}
+	void UpdateSettingsUI() override;
 public:
 	RayTracingSecond();
 	RayTracingSecond(const RayTracingSecond&) = delete;
