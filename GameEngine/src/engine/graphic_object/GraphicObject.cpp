@@ -26,7 +26,7 @@ void GraphicObject::ComputeBuffers()
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 }
 
-void GraphicObject::Draw()
+void GraphicObject::Draw(GLuint _mode)
 {
 	if (!IsValid()) return;
 	// Vertices
@@ -38,5 +38,5 @@ void GraphicObject::Draw()
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	glDrawArrays(_mode, 0, vertices.size());
 }

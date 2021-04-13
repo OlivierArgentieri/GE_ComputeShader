@@ -80,9 +80,9 @@ bool Window::Init(int _width, int _height)
     glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 
     // Enable depth test
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
+    //glDepthFunc(GL_LESS);
 
     // Cull triangles which normal is not towards the camera
     glEnable(GL_CULL_FACE);

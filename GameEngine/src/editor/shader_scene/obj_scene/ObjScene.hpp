@@ -14,7 +14,9 @@ class ObjScene : public ShaderScene, RenderView
 	struct SsboData
 	{
 		glm::vec4 vertices[6];
-		float time = 0;
+		
+		float delta_time = 0;
+		float temp = 0;
 	};
 
 private:

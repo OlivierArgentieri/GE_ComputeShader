@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
-RayTracingSecond::RayTracingSecond() : programID(0), vertexbuffer(0), uvbuffer(0), outTextureID(0), outTexture(0), matrixID(0)
+RayTracingSecond::RayTracingSecond() : programID(0), vao(0), vbo(0), outTextureID(0), outTexture(0), matrixID(0)
 {
 }
 
@@ -18,14 +18,30 @@ void RayTracingSecond::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
-	pivot = glm::vec3(1, 1, 0);
-	angle = glm::radians(90.0f);
+	pivot = glm::vec3(0,1,0);
+	angle = 0;
 
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+	//create vao
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
-	/**/
+	/*/#1#/ create vertices#1#
+	vertices.push_back(glm::vec3(0,0,0));
+	vertices.push_back(glm::vec3(0.5,0,0));
+	vertices.push_back(glm::vec3(0.6,0,0));
+	vertices.push_back(glm::vec3(0.7,0,0));
+	vertices.push_back(glm::vec3(0.8,0,0));
+	vertices.push_back(glm::vec3(0.9,0,0));
+	vertices.push_back(glm::vec3(1,0,0));
+	
+	
+	
+	/#1#/ create vbo#1#
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);*/
+	
+	/* load shaders  */
 	vertexShader.LoadShader("assets/raytracing_second/Transform.vertexshader", GL_VERTEX_SHADER);
 	fragmentShader.LoadShader("assets/raytracing_second/Texture.fragmentshader", GL_FRAGMENT_SHADER);
 
@@ -38,20 +54,12 @@ void RayTracingSecond::Init()
 
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 
-
+	GLint position_attribute = glGetAttribLocation(vertexShader.GetProgramID(), "inVecPosition");
+	glVertexAttribPointer(position_attribute, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glEnableVertexAttribArray(position_attribute);
 	matrixID = glGetUniformLocation(programID, "MVP");
 
-	/** Texture */
-	glGenTextures(1, &outTexture);
-	glBindTexture(GL_TEXTURE_2D, outTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, FrameBufferObject::SIZE_X_VIEWPORT, FrameBufferObject::SIZE_Y_VIEWPORT, 0, GL_RGBA, GL_FLOAT, nullptr);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
+	
 	/** SSBO  */
 	// see : https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object
 
@@ -62,71 +70,77 @@ void RayTracingSecond::Init()
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
 
-	/* load obj file */
+	/* load obj file
 	gObject.LoadFromFile("assets/obj/cube.obj");
-	gObject.ComputeBuffers();
+	gObject.ComputeBuffers(); */
 
 	/** Compute Shader */
 	computeShader.LoadShader("assets/raytracing_second/raytracing_second.computeshader", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
-	outTextureID = glGetUniformLocation(programID, "mycsTexture");
+	//outTextureID = glGetUniformLocation(programID, "mycsTexture");
 
-
+	Shader::Use(computeShader.GetProgramID());
 	// texture is our output
-	glBindTexture(GL_TEXTURE_2D, outTexture);
-	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-
-	glDispatchCompute(30, 40, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
+	
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glDispatchCompute(1, 1, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glBindTexture(GL_TEXTURE_2D, 0);
+
 
 }
 
 void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
-	ssbo_data->time += _dt;
-	ssbo_data->delta_time = _dt;
+	//ssbo_data->time += _dt;
+	//ssbo_data->delta_time = _dt;
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
 
 
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
-	//glBindTexture(GL_TEXTURE_2D, texture);
-	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(30, 40, 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
+	glDispatchCompute(1, 1, 1);
+
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	/** debug value of shader in console */
 	// uncomment if you want to test 
-	/**/int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "layoutName");
+	/**/int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "particlesBuffer");
 	if (_index != GL_INVALID_INDEX)
 	{
 		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 6);
 		memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		/*if (ssbo_data)
+		/**/if (ssbo_data)
 		{
+			/*glGenBuffers(1, &vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(SsboData), &ssbo_data->vertices[0], GL_STATIC_DRAW);*/
 			LOG(Info) << ssbo_data->temp;
-		}*/
+
+			// use fragment shader /vertex shader
+			/*Shader::Use(fragmentShader.GetProgramID());
+			glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
+
+
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			glPointSize(10);
+			glDrawArrays(GL_POINTS, 0, vertices.size());*/
+
+		}
 	}
 
-	Shader::Use(fragmentShader.GetProgramID());
-	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
+	
 
+	
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, outTexture);
-	glUniform1i(outTextureID, 0);
-
-	gObject.Draw();
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	
 
 }
 

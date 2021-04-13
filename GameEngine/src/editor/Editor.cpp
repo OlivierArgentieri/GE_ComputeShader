@@ -9,12 +9,12 @@
 
 
 /* map of SSBO ID *
-
- | Cs_ToTexture  | 7 |
- | ObjScene      | 8 |
+ * 
  | RayTracing    | 5 |
  | RayTracing2   | 6 |
- 
+ | Cs_ToTexture  | 7 |
+ | ObjScene      | 8 |
+ *
  */
 
 Editor::Editor() : isRunning(false), windowWidth(0), windowHeight(0), currentScene(0)

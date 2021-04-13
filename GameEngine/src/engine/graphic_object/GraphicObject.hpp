@@ -34,5 +34,5 @@ public:
 	void ComputeBuffers();
 
 	/** Draw buffers */
-	void Draw();
+	void Draw(GLuint _mode = GL_TRIANGLES);
 };

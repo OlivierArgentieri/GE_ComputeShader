@@ -90,6 +90,7 @@ void ObjScene::Init()
 		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 	}
+	
 	/** Compute Shader */
 	computeShader.LoadShader("assets/obj/obj.computeshader", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
@@ -105,9 +106,10 @@ void ObjScene::Init()
 void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	//ssbo_data->time += _dt;
-	//ssbo_data->delta_time = _dt;
+	ssbo_data->delta_time = _dt;
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
 
 
 	/** Use compute shader */
@@ -139,7 +141,7 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 			glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 		}
-			//LOG(Info) << ssbo_data->time;
+			LOG(Info) << ssbo_data->temp;
 	}
 
 	Shader::Use(fragmentShader.GetProgramID());

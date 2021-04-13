@@ -16,11 +16,18 @@ class RayTracingSecond : public ShaderScene, RenderView, RenderTexture
 {
 	struct SsboData
 	{
-		float time = 0;
-		float delta_time = 0;
+		//glm::vec4 vertices[1024];
 		float temp=0;
 	};
 
+	struct Particle
+	{
+		glm::vec4 pos;
+		glm::vec4 vel;
+		glm::vec4 acc;
+	};
+
+	std::vector<Particle> particles;
 private:
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
@@ -28,11 +35,8 @@ private:
 
 	GLuint programID;
 
-	GLuint vertexbuffer;
-	GLuint uvbuffer;
-	
-	GLuint baseTexture;
-	GLuint baseTextureID;
+	GLuint vao;
+	GLuint vbo;
 
 	/* mvp for shader */
 	GLuint matrixID;
