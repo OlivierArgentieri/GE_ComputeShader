@@ -102,10 +102,10 @@ void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 5);
 		memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		/*if (ssbo_data)
+		/**/if (ssbo_data)
 		{
 			LOG(Info) << ssbo_data->temp;
-		}*/
+		}
 	}
 
 	Shader::Use(fragmentShader.GetProgramID());

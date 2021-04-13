@@ -24,8 +24,9 @@ void RayTracingSecond::Init()
 	//create vao
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-
-	/*/#1#/ create vertices#1#
+	
+	
+	/*/#1#/ create vertices#1#*/
 	vertices.push_back(glm::vec3(0,0,0));
 	vertices.push_back(glm::vec3(0.5,0,0));
 	vertices.push_back(glm::vec3(0.6,0,0));
@@ -34,12 +35,10 @@ void RayTracingSecond::Init()
 	vertices.push_back(glm::vec3(0.9,0,0));
 	vertices.push_back(glm::vec3(1,0,0));
 	
-	
-	
-	/#1#/ create vbo#1#
+	/*#1#/ create vbo#1#*/
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);*/
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 	
 	/* load shaders  */
 	vertexShader.LoadShader("assets/raytracing_second/Transform.vertexshader", GL_VERTEX_SHADER);
@@ -62,7 +61,6 @@ void RayTracingSecond::Init()
 	
 	/** SSBO  */
 	// see : https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object
-
 	glGenBuffers(1, &ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(SsboData), ssbo_data, GL_STATIC_DRAW);
@@ -80,68 +78,66 @@ void RayTracingSecond::Init()
 	computeShader.CreateShaderProgram();
 	//outTextureID = glGetUniformLocation(programID, "mycsTexture");
 
-	Shader::Use(computeShader.GetProgramID());
+	// Shader::Use(computeShader.GetProgramID());
 	// texture is our output
 	
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glDispatchCompute(1, 1, 1); // (40,30,1) because : 32 * 40 = FrameBufferObject::SIZE_X_VIEWPORT  and 32*30 = FrameBufferObject::SIZE_Y_VIEWPORT : 32 is define in cs, on top
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	//glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
+	for(int i =0; i< 512 ; i++)
+	{
+		ssbo_data->vertices[i] = glm::vec4(0);
+		ssbo_data->debug[i] = -1;
+	}
 
+	
 }
 
 void RayTracingSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	//ssbo_data->time += _dt;
-	//ssbo_data->delta_time = _dt;
-
-	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
-
-
+	ssbo_data->delta_time = _dt;
+	
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
+	
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 	glDispatchCompute(1, 1, 1);
-
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 
 	/** debug value of shader in console */
-	// uncomment if you want to test 
-	/**/int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "particlesBuffer");
+	// uncomment if you want to test /**/
+	int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "particlesBuffer");
 	if (_index != GL_INVALID_INDEX)
 	{
+		
+
 		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 6);
 		memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		/**/if (ssbo_data)
 		{
-			/*glGenBuffers(1, &vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(SsboData), &ssbo_data->vertices[0], GL_STATIC_DRAW);*/
-			LOG(Info) << ssbo_data->temp;
+			//LOG(Info) << ssbo_data->debug;
 
+			/*glGenBuffers(1, &vbo);*/
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(SsboData), &ssbo_data->vertices[0], GL_STATIC_DRAW);
+			
 			// use fragment shader /vertex shader
-			/*Shader::Use(fragmentShader.GetProgramID());
+			Shader::Use(fragmentShader.GetProgramID());
 			glUniformMatrix4fv(matrixID, 1, GL_FALSE, &_mvp[0][0]);
-
-
-			glEnableVertexAttribArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-			glPointSize(10);
-			glDrawArrays(GL_POINTS, 0, vertices.size());*/
-
 		}
 	}
 
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	
-
-	
-
-	
-
+	glPointSize(10);
+	glDrawArrays(GL_POINTS, 0, 512);/**/
 }
 
 

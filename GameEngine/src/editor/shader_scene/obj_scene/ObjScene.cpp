@@ -130,6 +130,8 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		if (ssbo_data)
 		{
+			LOG(Info) << ssbo_data->temp;
+
 			vertices.clear();
 			for (glm::vec3 _vec : ssbo_data->vertices)
 			{
@@ -141,7 +143,6 @@ void ObjScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 			glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 		}
-			LOG(Info) << ssbo_data->temp;
 	}
 
 	Shader::Use(fragmentShader.GetProgramID());

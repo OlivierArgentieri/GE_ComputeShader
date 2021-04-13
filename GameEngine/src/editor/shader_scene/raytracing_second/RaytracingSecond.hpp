@@ -3,8 +3,6 @@
 #include <ext/vector_float2.hpp>
 #include <ext/vector_float3.hpp>
 
-
-
 #include "GraphicObject.hpp"
 #include "RenderTexture.hpp"
 #include "RenderView.hpp"
@@ -16,7 +14,10 @@ class RayTracingSecond : public ShaderScene, RenderView, RenderTexture
 {
 	struct SsboData
 	{
-		//glm::vec4 vertices[1024];
+		glm::vec4 vertices[512];
+		float debug[512];
+		float delta_time=0;
+		float noise=0;
 		float temp=0;
 	};
 
