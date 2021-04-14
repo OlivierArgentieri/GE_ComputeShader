@@ -29,13 +29,12 @@ void Editor::Init(int _screenWidth, int _screenHeight)
     windowWidth = _screenWidth;
     windowHeight = _screenHeight;
     isRunning = true;
-
 	
     RegisterShaderScene(&sampleScene);
     RegisterShaderScene(&objScene);
     RegisterShaderScene(&csToTextureScene);
     RegisterShaderScene(&csRayTracing);
-    RegisterShaderScene(&csRayTracing2);
+    RegisterShaderScene(&particlesScene);
 
 }
 
@@ -51,7 +50,6 @@ void Editor::Load()
 void Editor::HandleInputs()
 {}
 
-
 void Editor::Update(float _dt)
 {
     auto&& _shader_scene = shaderScenes[currentScene];
@@ -60,9 +58,7 @@ void Editor::Update(float _dt)
 }
 
 void Editor::Render()
-{
-   
-}
+{}
 
 void Editor::Clean()
 {

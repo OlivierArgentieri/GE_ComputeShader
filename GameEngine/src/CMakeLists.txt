@@ -20,7 +20,7 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sampl
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/raytracing)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/raytracing_second)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/particles_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/)
 
 # Files
@@ -73,7 +73,7 @@ FILE(GLOB OBJ_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_s
 FILE(GLOB OBJ_SCENE_TEST ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test/*.*)
 FILE(GLOB CS_TO_TEXTURE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/cs_to_texture/*.*)
 FILE(GLOB RAYTRACING ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/raytracing/*.*)
-FILE(GLOB RAYTRACING_SECOND ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/raytracing_second/*.*)
+FILE(GLOB PARTICLES_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/particles_scene/*.*)
 
 
 # ======== loaders ========
@@ -103,8 +103,7 @@ ADD_EXECUTABLE(GameEngine
 	${OBJ_SCENE_TEST}
 	${CS_TO_TEXTURE}
 	${RAYTRACING}
-	${RAYTRACING_SECOND}
-	.
+	${PARTICLES_SCENE}
 )
 TARGET_LINK_LIBRARIES(GameEngine glfw3 opengl32 User32 Gdi32 Shell32 glew32s)
 
@@ -129,7 +128,7 @@ SOURCE_GROUP(src/editor/shader_scene/obj_scene FILES ${OBJ_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/obj_scene_test FILES ${OBJ_SCENE_TEST})
 SOURCE_GROUP(src/editor/shader_scene/cs_to_texture FILES ${CS_TO_TEXTURE})
 SOURCE_GROUP(src/editor/shader_scene/raytracing FILES ${RAYTRACING})
-SOURCE_GROUP(src/editor/shader_scene/raytracing_second FILES ${RAYTRACING_SECOND})
+SOURCE_GROUP(src/editor/shader_scene/particles_scene FILES ${PARTICLES_SCENE})
 SOURCE_GROUP(src/editor/ FILES ${EDITOR})
 
 # Compile option

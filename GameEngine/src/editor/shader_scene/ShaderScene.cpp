@@ -34,6 +34,7 @@ void ShaderScene::UpdateShaderEditorUI()
 		{
 			OnReloadVertexShader();
 		}
+		ImGui::PushItemWidth(-1);
 		ImGui::InputTextMultiline("vertexShader", &vertexShader.shaderBuffer[0], vertexShader.shaderBuffer.length() * 2, ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
 		ImGui::EndTabItem();
 	}
@@ -44,6 +45,7 @@ void ShaderScene::UpdateShaderEditorUI()
 		{
 			OnReloadFragmentShader();
 		}
+		ImGui::PushItemWidth(-1);
 		ImGui::InputTextMultiline("fragmentShader", &fragmentShader.shaderBuffer[0], fragmentShader.shaderBuffer.length()*2 , ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
 		ImGui::EndTabItem();
 	}
@@ -54,6 +56,7 @@ void ShaderScene::UpdateShaderEditorUI()
 		{
 			OnReloadComputeShader();
 		}
+		ImGui::PushItemWidth(-1);
 		ImGui::InputTextMultiline("computeShader", &computeShader.shaderBuffer[0], computeShader.shaderBuffer.length() * 2, ImVec2(800, 500), ImGuiInputTextFlags_Multiline);
 		ImGui::EndTabItem();
 	}

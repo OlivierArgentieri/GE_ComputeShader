@@ -9,49 +9,20 @@
 #include "ShaderScene.hpp"
 #include "Transform.hpp"
 
-struct vec3
+
+class ParticlesScene : public ShaderScene, RenderView
 {
-	union
-	{
-		float x;
-		float r;
-	};
-
-	union
-	{
-		float y;
-		float g;
-	};
-
-	union
-	{
-		float z;
-		float b;
-	};
-
-	vec3(float _value) : x(0), y(0), z(0){}
-	vec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z){}
-	vec3() :vec3(0) {};
-};
-
-class RayTracingSecond : public ShaderScene, RenderView
-{
-	struct Particle
-	{
-		glm::vec4 pos;
-		glm::vec4 vel;
-	};
+	const static unsigned int NB_PARTICLES = 512;
 	
 	struct SsboData
 	{
-		glm::vec4 vertices[512];
+		glm::vec4 vertices[NB_PARTICLES];
 		//float debug[512];
 		float delta_time=0;
 		//float noise=0;
 		//float temp=0;
 	};
 
-	std::vector<Particle> particles;
 private:
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
@@ -80,10 +51,11 @@ protected:
 	void OnReloadVertexShader() override;
 	void OnReloadComputeShader() override;
 	void UpdateSettingsUI() override;
+
 public:
-	RayTracingSecond();
-	RayTracingSecond(const RayTracingSecond&) = delete;
-	~RayTracingSecond();
+	ParticlesScene();
+	ParticlesScene(const ParticlesScene&) = delete;
+	~ParticlesScene();
 	void Init() override;
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
 	
