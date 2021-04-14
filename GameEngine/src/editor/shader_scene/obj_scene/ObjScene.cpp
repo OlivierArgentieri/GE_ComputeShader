@@ -198,7 +198,7 @@ void ObjScene::OnReloadComputeShader()
 void ObjScene::Update(float _dt, glm::mat4 _mvp)
 {
 	Render(_dt, _mvp, GetName());
-	UpdateSettingsUI();
+	UpdateSettingsUI(_dt);
 }
 
 

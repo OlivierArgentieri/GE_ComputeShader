@@ -158,7 +158,7 @@ void CsToTexture::Update(float _dt, glm::mat4 _mvp)
 {
 	RenderView::Render(_dt, _mvp, GetName());
 	RenderTexture::Render();
-	UpdateSettingsUI();
+	UpdateSettingsUI(_dt);
 }
 
 void CsToTexture::Clean()

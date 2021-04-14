@@ -17,15 +17,15 @@ protected:
 	Shader computeShader;
 	Transform transform;
 	ShaderScene();
-	virtual void UpdateSettingsUI();
+	virtual void UpdateSettingsUI(float _dt);
 
 protected:
 	/** Transform Editor */
-	void UpdateTransformEditorUI();
+	void UpdateTransformEditorUI(float _dt);
 	float angle;
 	glm::vec3 pivot;
 	glm::vec3 scale;
-
+	bool _autoMod = false;
 protected:
 	/** Shader Editor*/
 	void UpdateShaderEditorUI();

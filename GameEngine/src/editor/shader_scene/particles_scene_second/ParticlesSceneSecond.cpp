@@ -1,4 +1,4 @@
-#include "ParticlesScene.hpp"
+#include "ParticlesSceneSecond.hpp"
 
 #include <gtc/type_ptr.inl>
 
@@ -8,18 +8,18 @@
 #include "imgui.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
-const unsigned int ParticlesScene::NB_PARTICLES;
+const unsigned int ParticlesSceneSecond::NB_PARTICLES;
 
-ParticlesScene::ParticlesScene() : programID(0), vao(0), vbo(0), matrixID(0), outTextureID(0), outTexture(0)
+ParticlesSceneSecond::ParticlesSceneSecond() : programID(0), vao(0), vbo(0), matrixID(0), outTextureID(0), outTexture(0)
 {
 }
 
-ParticlesScene::~ParticlesScene()
+ParticlesSceneSecond::~ParticlesSceneSecond()
 {
 	delete ssbo_data;
 }
 
-void ParticlesScene::Init()
+void ParticlesSceneSecond::Init()
 {
 	transform.SetScale(glm::vec3(1, 1, 1));
 	transform.SetPosition(glm::vec3(0, 0, 0));
@@ -77,7 +77,7 @@ void ParticlesScene::Init()
 	}
 }
 
-void ParticlesScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
+void ParticlesSceneSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	static unsigned int _index=0;
 	
@@ -126,7 +126,7 @@ void ParticlesScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 }
 
 
-void ParticlesScene::OnReloadFragmentShader()
+void ParticlesSceneSecond::OnReloadFragmentShader()
 {
 	fragmentShader.CompileShader();
 
@@ -136,7 +136,7 @@ void ParticlesScene::OnReloadFragmentShader()
 	vertexShader.CreateShaderProgram(programID); // same program for both shader
 }
 
-void ParticlesScene::OnReloadVertexShader()
+void ParticlesSceneSecond::OnReloadVertexShader()
 {
 	vertexShader.CompileShader();
 
@@ -146,13 +146,13 @@ void ParticlesScene::OnReloadVertexShader()
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 }
 
-void ParticlesScene::OnReloadComputeShader()
+void ParticlesSceneSecond::OnReloadComputeShader()
 {
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 }
 
-void ParticlesScene::UpdateSettingsUI(float _dt)
+void ParticlesSceneSecond::UpdateSettingsUI(float _dt)
 {
 	ShaderScene::UpdateSettingsUI(_dt);
 	ImGui::ColorEdit3("test color", &testColor[0]);
@@ -166,17 +166,17 @@ void ParticlesScene::UpdateSettingsUI(float _dt)
 	}
 }
 
-void ParticlesScene::Update(float _dt, glm::mat4 _mvp)
+void ParticlesSceneSecond::Update(float _dt, glm::mat4 _mvp)
 {
 	Render(_dt, _mvp, GetName());
 	UpdateSettingsUI(_dt);
 }
 
-void ParticlesScene::Clean()
+void ParticlesSceneSecond::Clean()
 {
 }
 
-char* ParticlesScene::GetName()
+char* ParticlesSceneSecond::GetName()
 {
 	return "Particles Scene";
 }

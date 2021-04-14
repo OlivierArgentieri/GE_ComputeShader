@@ -10,7 +10,7 @@
 #include "Transform.hpp"
 
 
-class ParticlesScene : public ShaderScene, RenderView
+class ParticlesSceneSecond : public ShaderScene, RenderView
 {
 	const static unsigned int NB_PARTICLES = 512;
 	
@@ -51,9 +51,9 @@ protected:
 	void UpdateSettingsUI(float _dt) override;
 
 public:
-	ParticlesScene();
-	ParticlesScene(const ParticlesScene&) = delete;
-	~ParticlesScene();
+	ParticlesSceneSecond();
+	ParticlesSceneSecond(const ParticlesSceneSecond&) = delete;
+	~ParticlesSceneSecond();
 	void Init() override;
 	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
 	

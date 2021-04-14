@@ -9,19 +9,32 @@ ShaderScene::ShaderScene() :angle(0), pivot(1,0,0), scale(1)
 {
 }
 
-void ShaderScene::UpdateSettingsUI()
+void ShaderScene::UpdateSettingsUI(float _dt)
 {
 	std::string _ID = std::string(GetName()) + "_settings";
 	ImGui::Begin(_ID.c_str());
-		UpdateTransformEditorUI();
+		UpdateTransformEditorUI(_dt);
 		UpdateShaderEditorUI();
 	ImGui::End();
 }
 
-void ShaderScene::UpdateTransformEditorUI()
+void ShaderScene::UpdateTransformEditorUI(float _dt)
 {
+	static float _speedAuto = 2;
 	ImGui::SliderAngle("slider angle", &angle);
+	ImGui::SameLine();
+	ImGui::Checkbox("Auto", &_autoMod);
 	ImGui::SliderFloat3("Pivot", glm::value_ptr(pivot), 0.0f, 1.0f);
+	
+	if (_autoMod)
+	{
+		angle += _speedAuto * _dt;
+
+		// because : angle = angle % 360; only works in C# ? 
+		if (glm::degrees(angle) > 360)
+			angle = glm::radians(-360.0f);
+	}
+
 	transform.SetRotation(glm::degrees(angle), pivot);
 }
 

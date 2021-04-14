@@ -86,7 +86,7 @@ void ObjSceneTest::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 void ObjSceneTest::Update(float _dt, glm::mat4 _mvp)
 {
 	Render(_dt, _mvp, GetName());
-	UpdateSettingsUI();
+	UpdateSettingsUI(_dt);
 }
 
 void ObjSceneTest::Clean()
