@@ -32,7 +32,6 @@ void ObjSceneTest::Init()
 
 	fragmentShader.CreateShaderProgram(programID); // same program for both shader
 	
-
 	matrixID = glGetUniformLocation(programID, "MVP");
 
 	/* Load Texture */
@@ -41,7 +40,6 @@ void ObjSceneTest::Init()
 	// Get a handle for our "myTexture" uniform
 	textureID = glGetUniformLocation(programID, "myTexture");
 	
-
 	gObject.LoadFromFile("assets/obj/cube.obj");
 	gObject.ComputeBuffers();
 

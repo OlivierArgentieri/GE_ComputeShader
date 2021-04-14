@@ -71,9 +71,20 @@ void ParticlesSceneSecond::Init()
 	glDispatchCompute(1, 1, 1); // (1,1,1) because : 1 * 512 : define in cs to generate 512 particles.
 
 	/** Init particles */
-	for (int i = 0; i < NB_PARTICLES; i++)
+	float _x = 0;
+	float _y = 0;
+	int _size = glm::sqrt(NB_PARTICLES);
+	float _temp = (_size*1.0f) - 1.0f;
+
+	for (int i = 0; i < _size; i++)
 	{
-		ssbo_data->vertices[i] = glm::vec4(glm::mix(-2.7, 2.7, ((i * 1.0f) / NB_PARTICLES)), 2, 0, 0);
+		_y = glm::mix(-2.0, 2.3, ((i * 1.0f) / _temp));
+		
+		for (int y = 0; y < _size; y++)
+		{
+			_x = glm::mix(-2.7, 2.7, ((y * 1.0f) / _temp));
+			ssbo_data->vertices[(i*_size)+y] = glm::vec4(_x, _y,0,0);
+		}
 	}
 }
 
