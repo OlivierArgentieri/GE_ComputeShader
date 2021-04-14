@@ -26,8 +26,8 @@ void CsToTexture::Init()
 	glBindVertexArray(VertexArrayID);
 
 	/**/
-	vertexShader.LoadShader("assets/cs_to_texture/Transform.vertexshader", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/cs_to_texture/Texture.fragmentshader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/cs_to_texture/vert.glsl", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/cs_to_texture/frag.glsl", GL_FRAGMENT_SHADER);
 
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -67,7 +67,7 @@ void CsToTexture::Init()
 	gObject.ComputeBuffers();
 
 	/** Compute Shader */
-	computeShader.LoadShader("assets/cs_to_texture/cs_to_texture.computeshader", GL_COMPUTE_SHADER);
+	computeShader.LoadShader("assets/cs_to_texture/compute.glsl", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 	textureID = glGetUniformLocation(programID, "mycsTexture");
