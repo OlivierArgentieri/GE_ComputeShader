@@ -20,12 +20,10 @@ layout(std430, binding = 6) buffer particlesBuffer
 void main() {
   float time;
   float noise;
-
-  int index = int(gl_LocalInvocationID.x);
-
   // 				1+ to avoid noise at (0,0) 
-  //noise=gold_noise(1+gl_LocalInvocationID.xy, gl_LocalInvocationID.x+delta_time);
-  //if(p[index].y < -5)
-  //	p[index].y = 10;
-  //p[index].y += GRAVITY * noise;
+  noise=gold_noise(1+gl_LocalInvocationID.xy, gl_LocalInvocationID.x+delta_time);
+  int index = int(gl_LocalInvocationID.x);
+  vec3 dir = p[gl_LocalInvocationID.x] - vec3(0,0,0);
+  p[gl_LocalInvocationID.x] -= dir * delta_time * noise; 
+
 }

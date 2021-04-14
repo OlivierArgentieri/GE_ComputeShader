@@ -12,7 +12,7 @@
 
 class ParticlesSceneSecond : public ShaderScene, RenderView
 {
-	const static unsigned int NB_PARTICLES = 512;
+	const static unsigned int NB_PARTICLES = 1024;
 	
 	struct SsboData
 	{
