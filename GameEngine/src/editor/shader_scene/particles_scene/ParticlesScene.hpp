@@ -17,10 +17,8 @@ class ParticlesScene : public ShaderScene, RenderView
 	struct SsboData
 	{
 		glm::vec4 vertices[NB_PARTICLES];
-		//float debug[512];
+		//float debug[NB_PARTICLES];
 		float delta_time=0;
-		//float noise=0;
-		//float temp=0;
 	};
 
 private:

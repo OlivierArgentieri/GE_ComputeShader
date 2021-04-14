@@ -10,7 +10,7 @@
 
 const unsigned int ParticlesScene::NB_PARTICLES;
 
-ParticlesScene::ParticlesScene() : programID(0), vao(0), vbo(0), outTextureID(0), outTexture(0), matrixID(0)
+ParticlesScene::ParticlesScene() : programID(0), vao(0), vbo(0), matrixID(0), outTextureID(0), outTexture(0)
 {
 }
 
@@ -63,10 +63,6 @@ void ParticlesScene::Init()
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
 
-	/* load obj file
-	gObject.LoadFromFile("assets/obj/cube.obj");
-	gObject.ComputeBuffers(); */
-
 	/** Compute Shader */
 	computeShader.LoadShader("assets/particles_scene/compute.glsl", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
@@ -83,7 +79,8 @@ void ParticlesScene::Init()
 
 void ParticlesScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
-	//ssbo_data->time += _dt;
+	static unsigned int _index=0;
+	
 	ssbo_data->delta_time = _dt;
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
@@ -96,7 +93,7 @@ void ParticlesScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 
 	/** debug value of shader in console */
-	int _index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "particlesBuffer");
+	_index = glGetProgramResourceIndex(computeShader.GetProgramID(), GL_SHADER_STORAGE_BLOCK, "particlesBuffer");
 	if (_index == GL_INVALID_INDEX) return;
 
 
@@ -110,6 +107,7 @@ void ParticlesScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	{
 		vertices.emplace_back(ssbo_data->vertices[i].x, ssbo_data->vertices[i].y, ssbo_data->vertices[i].z);
 	}
+	
 	/* Bind vbo */
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
@@ -126,7 +124,6 @@ void ParticlesScene::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glPointSize(5);
 	glDrawArrays(GL_POINTS, 0, NB_PARTICLES);/**/
 }
-
 
 
 void ParticlesScene::OnReloadFragmentShader()
@@ -176,12 +173,9 @@ void ParticlesScene::Update(float _dt, glm::mat4 _mvp)
 	UpdateSettingsUI();
 }
 
-
-
 void ParticlesScene::Clean()
 {
 }
-
 
 char* ParticlesScene::GetName()
 {

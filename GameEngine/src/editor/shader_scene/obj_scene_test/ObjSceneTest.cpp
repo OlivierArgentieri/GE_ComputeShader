@@ -16,8 +16,6 @@ void ObjSceneTest::Init()
 	pivot = glm::vec3(1, 1, 0);
 	angle = glm::radians(90.0f);
 
-
-
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -91,11 +89,9 @@ void ObjSceneTest::Update(float _dt, glm::mat4 _mvp)
 	UpdateSettingsUI();
 }
 
-
 void ObjSceneTest::Clean()
 {
 }
-
 
 char * ObjSceneTest::GetName()
 {
