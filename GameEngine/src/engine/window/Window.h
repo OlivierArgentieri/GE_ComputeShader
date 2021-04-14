@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "Log.h"
 #include <string>
+#include <ext/vector_float2.hpp>
 
 
 class Window
@@ -29,15 +30,19 @@ public:
     bool CloseWindow();
 
 	GLFWwindow* GetWindow() const;
-    GLFWwindow* window;
+
+    static void GetCursorPosition(double& _x, double& _y);
+    static glm::vec2 GetSize() { return size; }
 
 private:
+	
     bool InitGLFW();
     bool InitGLEW();
     bool InitImGUI();
 	
     const std::string& title;
-
+    static GLFWwindow* window;
+    static glm::vec2 size;
     // Delete
     Window() = delete;
     //Window(const Window&) = delete;

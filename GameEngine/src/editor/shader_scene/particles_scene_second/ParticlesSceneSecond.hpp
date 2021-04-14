@@ -16,8 +16,11 @@ class ParticlesSceneSecond : public ShaderScene, RenderView
 	
 	struct SsboData
 	{
-		glm::vec4 vertices[NB_PARTICLES];
 		//float debug[NB_PARTICLES];
+		glm::vec4 vertices[NB_PARTICLES];
+
+		float cursor_x;
+		float cursor_y;
 		float delta_time=0;
 	};
 
@@ -44,6 +47,8 @@ private:
 	glm::vec3 testColor = glm::vec3(0.45f, 0.55f, 0.60f);
 	GLint color_location;
 
+private:
+	void resetPos();
 protected:
 	void OnReloadFragmentShader() override;
 	void OnReloadVertexShader() override;

@@ -12,18 +12,24 @@ float gold_noise(in vec2 xy, in float seed){
 layout(std430, binding = 6) buffer particlesBuffer
 {
     vec3 p[1024];
-    //float debug[512];
+    //float debug[1024];
+	float cursor_x;
+	float cursor_y;
 	float delta_time;
-
 };
 
 void main() {
   float time;
   float noise;
-  // 				1+ to avoid noise at (0,0) 
-  noise=gold_noise(1+gl_LocalInvocationID.xy, gl_LocalInvocationID.x+delta_time);
+  
   int index = int(gl_LocalInvocationID.x);
-  vec3 dir = p[gl_LocalInvocationID.x] - vec3(0,0,0);
-  p[gl_LocalInvocationID.x] -= dir * delta_time * noise; 
+  
+  // 				1+ to avoid noise at (0,0) 
+  noise=gold_noise(1+gl_LocalInvocationID.xy,index+delta_time);
+  vec3 target = vec3(cursor_x,-cursor_y ,0);
+
+  vec3 dir = p[index] - target*0.2;
+  //debug[index] = cursor_x;
+  p[index] -= dir * noise ; 
 
 }

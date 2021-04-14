@@ -13,6 +13,10 @@
 using std::cout;
 using std::endl;
 
+
+GLFWwindow* Window::window=nullptr;
+glm::vec2  Window::size=glm::vec2(0);
+
 Window::Window(const std::string& _title) : title(_title), previousSeconds(0), currentSeconds(0), frameCount(0)
 {}
 
@@ -43,7 +47,7 @@ void Window::UpdateFpsCounter(float _dt)
 
 bool Window::Init(int _width, int _height)
 {
-    
+    size = glm::vec2(_width, _height);
     if (!InitGLFW()) return false;
     
     window = glfwCreateWindow(_width, _height, title.c_str(), nullptr, nullptr);
@@ -203,6 +207,11 @@ bool Window::CloseWindow()
 GLFWwindow* Window::GetWindow() const
 {
     return window;
+}
+
+void Window::GetCursorPosition(double& _x, double& _y)
+{
+    glfwGetCursorPos(window, &_x, &_y);
 }
 
 bool Window::InitGLFW()

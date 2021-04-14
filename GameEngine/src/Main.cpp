@@ -20,7 +20,8 @@ int main(void)
 	if (LOG_CONFIG.restart) { Log::restart(); }
 
 	// Init Window
-	/**/Window _window = Window("openGL window");
+	/**/
+	Window _window = Window("openGL window");
 	if (!_window.Init(SCREEN_WIDTH, SCREEN_HEIGHT))
 	{
 		return 1;
@@ -34,8 +35,6 @@ int main(void)
 	_game.Load();
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-	
 
 	
 	/* ----- Render loop -----  */

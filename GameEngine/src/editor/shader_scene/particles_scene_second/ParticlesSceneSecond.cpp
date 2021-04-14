@@ -6,6 +6,7 @@
 
 #include "DdsLoader.hpp"
 #include "imgui.h"
+#include "Window.h"
 #include "../../../engine/loaders/obj/ObjLoader.hpp"
 
 const unsigned int ParticlesSceneSecond::NB_PARTICLES;
@@ -67,32 +68,35 @@ void ParticlesSceneSecond::Init()
 	computeShader.LoadShader("assets/particles_scene_second/compute.glsl", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
-	
+
 	glDispatchCompute(1, 1, 1); // (1,1,1) because : 1 * 512 : define in cs to generate 512 particles.
 
 	/** Init particles */
 	float _x = 0;
 	float _y = 0;
 	int _size = glm::sqrt(NB_PARTICLES);
-	float _temp = (_size*1.0f) - 1.0f;
+	float _temp = (_size * 1.0f) - 1.0f;
 
 	for (int i = 0; i < _size; i++)
 	{
 		_y = glm::mix(-2.0, 2.3, ((i * 1.0f) / _temp));
-		
+
 		for (int y = 0; y < _size; y++)
 		{
 			_x = glm::mix(-2.7, 2.7, ((y * 1.0f) / _temp));
-			ssbo_data->vertices[(i*_size)+y] = glm::vec4(_x, _y,0,0);
+			ssbo_data->vertices[(i * _size) + y] = glm::vec4(_x, _y, 0, 0);
 		}
 	}
 }
 
 void ParticlesSceneSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
-	static unsigned int _index=0;
-	
+	static unsigned int _index = 0;
+
 	ssbo_data->delta_time = _dt;
+	ssbo_data->cursor_x = GetCursorPosition().x;
+	ssbo_data->cursor_y = GetCursorPosition().y;
+
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
@@ -118,7 +122,7 @@ void ParticlesSceneSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 
 	{
 		vertices.emplace_back(ssbo_data->vertices[i].x, ssbo_data->vertices[i].y, ssbo_data->vertices[i].z);
 	}
-	
+
 	/* Bind vbo */
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
@@ -136,6 +140,16 @@ void ParticlesSceneSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 
 	glDrawArrays(GL_POINTS, 0, NB_PARTICLES);/**/
 }
 
+
+void ParticlesSceneSecond::resetPos()
+{
+
+	for (int i = 0; i < NB_PARTICLES; i++)
+	{
+		ssbo_data->vertices[i] = glm::vec4(0);
+	}
+
+}
 
 void ParticlesSceneSecond::OnReloadFragmentShader()
 {
@@ -175,6 +189,9 @@ void ParticlesSceneSecond::UpdateSettingsUI(float _dt)
 		_temp = "particuleID: " + std::to_string(i);
 		ImGui::InputFloat3(_temp.c_str(), &ssbo_data->vertices[i].x);
 	}
+
+	if (ImGui::Button("Reset Pos"))
+		resetPos();
 }
 
 void ParticlesSceneSecond::Update(float _dt, glm::mat4 _mvp)
