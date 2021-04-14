@@ -10,10 +10,11 @@
 
 /* map of SSBO ID *
  * 
- | RayTracing    | 5 |
- | RayTracing2   | 6 |
- | Cs_ToTexture  | 7 |
- | ObjScene      | 8 |
+ | RayTracing           | 5 |
+ | ParticlesScene       | 6 |
+ | Cs_ToTexture         | 7 |
+ | ObjScene             | 8 |
+ | ParticlesSceneSecond | 9 |
  *
  */
 
@@ -35,6 +36,7 @@ void Editor::Init(int _screenWidth, int _screenHeight)
     RegisterShaderScene(&csToTextureScene);
     RegisterShaderScene(&csRayTracing);
     RegisterShaderScene(&particlesScene);
+    RegisterShaderScene(&particlesSceneSecond);
 
 }
 

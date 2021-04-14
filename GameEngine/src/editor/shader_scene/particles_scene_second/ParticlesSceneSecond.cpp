@@ -34,8 +34,8 @@ void ParticlesSceneSecond::Init()
 	glGenBuffers(1, &vbo);
 
 	/* load shaders  */
-	vertexShader.LoadShader("assets/particles_scene/vert.glsl", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/particles_scene/frag.glsl", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/particles_scene_second/vert.glsl", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/particles_scene_second/frag.glsl", GL_FRAGMENT_SHADER);
 
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -59,12 +59,12 @@ void ParticlesSceneSecond::Init()
 	glGenBuffers(1, &ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(SsboData), ssbo_data, GL_STATIC_DRAW);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 9, ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
 
 	/** Compute Shader */
-	computeShader.LoadShader("assets/particles_scene/compute.glsl", GL_COMPUTE_SHADER);
+	computeShader.LoadShader("assets/particles_scene_second/compute.glsl", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 	
@@ -97,7 +97,7 @@ void ParticlesSceneSecond::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 
 	if (_index == GL_INVALID_INDEX) return;
 
 
-	glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 6);
+	glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 9);
 	memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	if (!ssbo_data) return;
@@ -178,5 +178,5 @@ void ParticlesSceneSecond::Clean()
 
 char* ParticlesSceneSecond::GetName()
 {
-	return "Particles Scene";
+	return "Particles Scene test obj";
 }

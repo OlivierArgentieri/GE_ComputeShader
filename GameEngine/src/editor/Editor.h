@@ -6,7 +6,7 @@
 #include "ObjSceneTest.hpp"
 #include "Raytracing.hpp"
 #include "ParticlesScene.hpp"
-#include "SampleScene.hpp"
+#include "ParticlesSceneSecond.hpp"
 #include "cs_to_texture/CsToTexture.hpp"
 #include "obj_scene/ObjScene.hpp"
 
@@ -34,7 +34,6 @@ public:
     void UpdateUI();
 
     bool isRunning;
-    
 
 	/* register shader scene objects */
     void RegisterShaderScene(ShaderScene* _shaderScene);
@@ -47,6 +46,7 @@ private:
     CsToTexture csToTextureScene;
     RayTracing csRayTracing;
     ParticlesScene particlesScene;
+    ParticlesSceneSecond particlesSceneSecond;
 
 	// current:
     int currentScene;
