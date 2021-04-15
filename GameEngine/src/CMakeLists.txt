@@ -16,7 +16,6 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_view
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/render/render_texture)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/engine/graphic_object/)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sample_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/raytracing)
@@ -69,7 +68,6 @@ FILE(GLOB EDITOR ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/*.*)
 
 # scenes
 FILE(GLOB SHADER_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/*.*)
-FILE(GLOB SAMPLE_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/sample_scene/*.*)
 FILE(GLOB OBJ_SCENE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene/*.*)
 FILE(GLOB OBJ_SCENE_TEST ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/obj_scene_test/*.*)
 FILE(GLOB CS_TO_TEXTURE ${CMAKE_SOURCE_DIR}/GameEngine/src/editor/shader_scene/cs_to_texture/*.*)
@@ -100,7 +98,6 @@ ADD_EXECUTABLE(GameEngine
 	${DDS_LOADER}
 	${TRANSFORM}
 	${SHADER_SCENE}
-	${SAMPLE_SCENE}	
 	${OBJ_SCENE}
 	${OBJ_SCENE_TEST}
 	${CS_TO_TEXTURE}
@@ -126,7 +123,6 @@ SOURCE_GROUP(src/engine/render/render_view FILES ${RENDER_VIEW})
 SOURCE_GROUP(src/engine/render/render_texture FILES ${RENDER_TEXTURE})
 SOURCE_GROUP(src/engine/graphic_object/ FILES ${GRAPHIC_OBJECT})
 SOURCE_GROUP(src/editor/shader_scene FILES ${SHADER_SCENE})
-SOURCE_GROUP(src/editor/shader_scene/sample_scene FILES ${SAMPLE_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/obj_scene FILES ${OBJ_SCENE})
 SOURCE_GROUP(src/editor/shader_scene/obj_scene_test FILES ${OBJ_SCENE_TEST})
 SOURCE_GROUP(src/editor/shader_scene/cs_to_texture FILES ${CS_TO_TEXTURE})

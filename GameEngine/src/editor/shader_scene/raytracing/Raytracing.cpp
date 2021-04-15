@@ -61,7 +61,7 @@ void RayTracing::Init()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
-	/* load obj file */
+	/** load obj file */
 	gObject.LoadFromFile("assets/raytracing/cube.obj");
 	gObject.ComputeBuffers();
 
