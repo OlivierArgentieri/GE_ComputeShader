@@ -8,7 +8,7 @@
 class RenderView
 {
 private:
-	glm::vec2 position = glm::vec2(204, 18);
+	glm::vec2 position = glm::vec2(216, 18);
 	glm::vec2 size = glm::vec2(350, 300);
 
 protected:

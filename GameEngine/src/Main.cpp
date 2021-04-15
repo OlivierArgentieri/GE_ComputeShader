@@ -10,8 +10,8 @@ LogConfig LOG_CONFIG = {};
 int main(void)
 {
 	// Initialise GLFW
-	const int SCREEN_WIDTH = 1024;
-	const int SCREEN_HEIGHT = 768;
+	const int SCREEN_WIDTH = 1080;
+	const int SCREEN_HEIGHT = 960;
 
 	// Init Logging
 	// Log init

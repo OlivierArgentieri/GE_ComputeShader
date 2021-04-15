@@ -10,8 +10,8 @@ void RenderTexture::Render()
 	std::string _name = std::string(GetName()) + "_texture";
 	ImGui::Begin(_name.c_str(), &_useless, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration);
 	ImGui::TextColored(ImVec4(0.45f, 0.55f, 0.60f, 1.00f), "Render Texture View");
-	ImGui::SetWindowPos(ImVec2(600, 18));
-	ImGui::SetWindowSize(ImVec2(350, 300));
+	ImGui::SetWindowPos(ImVec2(566, 18));
+	ImGui::SetWindowSize(ImVec2(512, 320));
 
 	std::string _childName = _name + "_render";
 	ImGui::BeginChild(_childName.c_str());

@@ -75,7 +75,7 @@ void RayTracing::Init()
 	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	/** Determining the work group size */
-	glDispatchCompute(40, 30, 1);
+	glDispatchCompute(32, 30, 1); // 1024 768 
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
@@ -91,7 +91,7 @@ void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	/** Use compute shader */
 	Shader::Use(computeShader.GetProgramID());
 	glBindImageTexture(0, outTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(40, 30, 1);
+	glDispatchCompute(32, 30, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
