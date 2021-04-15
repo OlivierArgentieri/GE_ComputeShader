@@ -93,12 +93,6 @@ vec3 ray_color(ray _r, sphere objects[2])
 	{
 		return 0.5 * (_rec.normal + vec3(1,1,1));
 	}
-	
-	//if(hit_sphere(objects[1].position, objects[1].radius, _r, 0, _infinity, _rec))
-	//{
-	//	return 0.5 * (_rec.normal + vec3(1,1,1));
-	//}
-	
 	vec3 _unitDirection = _r.direction/length(_r.direction);
 	float _t = 0.5*(_unitDirection.y + 1.0);
 	return (1.0-_t)*vec3(1.0,1.0,1.0) + _t*vec3(0.5,0.7,1.0);
@@ -106,31 +100,22 @@ vec3 ray_color(ray _r, sphere objects[2])
 
 
 // ====== SSBO ====== //
-
 layout(std430, binding = 5) buffer layoutName
 {
-	//vec4 center;
-	//float radius;
-    //float time;
-	//float temp;
 	sphere test_array[2];
-	
     float delta_time;
+	float time;
 };
 
 
 void main() {
-	
-	//sphere _one;
-	//_one.position=vec3(0,0,-1);
-	//_one.radius=0.5;
-	
-	//sphere _two;
-	//_two.position=vec3(0,-100.5,-1);
-	//_two.radius=100.0f;
-	
-	//test_array[0] = _one;
-	//test_array[1] = _two;
+  time += delta_time;
+  
+  if(time > 360) time=0;
+
+  test_array[0].position.y = sin(time*4)*delta_time; // just to test with movement 
+  
+  
   // image
   float aspect_ratio = 16.0/9.0;
   int image_width = 400;

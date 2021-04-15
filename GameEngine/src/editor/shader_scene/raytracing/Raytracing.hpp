@@ -30,6 +30,7 @@ class RayTracing :  public ShaderScene, RenderView, RenderTexture
 		//float temp = 0;
 		Sphere spheres[2] = {};
 		float delta_time = 0;
+		float time = 0;
 	};
 
 private:
