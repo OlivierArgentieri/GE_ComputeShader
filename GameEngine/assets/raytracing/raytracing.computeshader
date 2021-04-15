@@ -20,22 +20,30 @@ struct ray
 	vec3 at(float t){return origin + t * direction;}
 };
 
-bool hit_sphere(vec3 _center, float _radius, ray _r)
+float hit_sphere(vec3 _center, float _radius, ray _r)
 {
 	vec3 _oc = _r.origin - _center;
 	float _a = dot(_r.direction, _r.direction);
 	float _b = 2.0 * dot(_oc, _r.direction);
 	float _c = dot(_oc, _oc) - _radius * _radius;
 	float _discriminant = _b*_b - 4*_a*_c;
-	return (_discriminant > 0);
+	if(_discriminant < 0) {
+		return -1.0;
+	}
+	return (-_b - sqrt(_discriminant))/(2.0*_a);
 }
 
 vec3 ray_color(ray _r)
 {
-	if(hit_sphere(vec3(0,0,-1), 0.5, _r))
-	{ return vec3(1,0,0); }
+	float _t = hit_sphere(vec3(0,0,-1), 0.5, _r);
+	if(_t > 0.0)
+	{
+		vec3 _temp = _r.at(_t)-vec3(0,0,-1);
+		vec3 _N =  _temp/ length(_temp); // unit_vector
+		return 0.5*vec3(_N.x+1, _N.y+1, _N.z+1);
+	}
 	vec3 _unitDirection = _r.direction/length(_r.direction);
-	float _t = 0.5*(_unitDirection.y + 1.0);
+	_t = 0.5*(_unitDirection.y + 1.0);
 	return (1.0-_t)*vec3(1.0,1.0,1.0) + _t*vec3(0.5,0.7,1.0);
 }
 
