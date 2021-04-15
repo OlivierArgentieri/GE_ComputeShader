@@ -5,16 +5,6 @@ layout (local_size_x = 32, local_size_y = 32) in;
 layout (rgba32f, binding = 0) uniform image2D img_output;
 // layout (rgba32f, binding = 1) uniform image2D img_input;
 
-// ====== SSBO ====== //
-layout(std430, binding = 5) buffer layoutName
-{
-	vec4 center;
-	float radius;
-    float time;
-    float delta_time;
-	float temp;
-};
-
 struct ray
 {
     vec3 origin;
@@ -23,40 +13,124 @@ struct ray
 	vec3 at(float t){return origin + t * direction;}
 };
 
+struct hitRecord
+{
+	vec3 p;
+	vec3 normal;
+	float t;
+	bool frontFace;
+	
+	void setFaceNormal(ray _r, vec3 _outwardNormal)
+	{
+		frontFace = dot(_r.direction, _outwardNormal) <0;
+		normal = frontFace ? _outwardNormal : - _outwardNormal;
+	}
+};
+
 float length_squared(vec3 _inVec)
 {
 	return _inVec[0]*_inVec[0] + _inVec[1] * _inVec[1] + _inVec[2] * _inVec[2];
 }
 
-float hit_sphere(vec3 _center, float _radius, ray _r)
+bool hit_sphere(vec3 _center, float _radius, inout ray _r, float _tMin, float _tMax, inout hitRecord _rec)
 {
 	vec3 _oc = _r.origin - _center;
 	float _a = length_squared(_r.direction);
 	float _halfB = dot(_oc, _r.direction);
 	float _c = length_squared(_oc) - _radius * _radius;
+	
 	float _discriminant = _halfB*_halfB - _a*_c;
-	if(_discriminant < 0) {
-		return -1.0;
+	if(_discriminant < 0) return false;
+	
+	float _sqrtd = sqrt(_discriminant);
+	float _root = (-_halfB - _sqrtd)/_a;
+	if(_root < _tMin || _tMax < _root) 
+	{
+		_root = (-_halfB + _sqrtd)/_a;
+		if(_root < _tMin || _tMax < _root)
+			return false;
 	}
-	return (-_halfB - sqrt(_discriminant))/_a;
+	
+	_rec.t = _root;
+	_rec.p = _r.at(_rec.t);
+	vec3 _outwardNormal = (_rec.p - _center) / _radius;
+	_rec.setFaceNormal(_r, _outwardNormal);
+	return true;
 }
 
-vec3 ray_color(ray _r, vec3 _position, float _radius)
+
+struct sphere
 {
+	vec3 position;
+	float radius;
+};
+
+
+bool hit_objects(ray _r, float _tMin, float _tMax, inout hitRecord _rec, sphere objects[2])
+{
+	hitRecord _tempRec;
+	bool _hitAnything = false;
+	float _closestSoFar = _tMax;
 	
-	float _t = hit_sphere(_position, _radius, _r);
-	if(_t > 0.0)
+	for(int _i=0; _i < 2; _i++)
 	{
-		vec3 _temp = _r.at(_t)-vec3(0,0,-1);
-		vec3 _N =  _temp/ length(_temp); // unit_vector
-		return 0.5*vec3(_N.x+1, _N.y+1, _N.z+1);
+		if(hit_sphere(objects[_i].position, objects[_i].radius, _r, _tMin, _closestSoFar, _tempRec))
+		{
+			_hitAnything = true;
+			_closestSoFar = _tempRec.t;
+			_rec = _tempRec;
+		}
 	}
+	return _hitAnything;
+}
+
+vec3 ray_color(ray _r, sphere objects[2])
+{
+	hitRecord _rec;
+	float _infinity = 9999999.0;
+	
+	if(hit_objects(_r, 0, _infinity, _rec, objects))
+	{
+		return 0.5 * (_rec.normal + vec3(1,1,1));
+	}
+	
+	//if(hit_sphere(objects[1].position, objects[1].radius, _r, 0, _infinity, _rec))
+	//{
+	//	return 0.5 * (_rec.normal + vec3(1,1,1));
+	//}
+	
 	vec3 _unitDirection = _r.direction/length(_r.direction);
-	_t = 0.5*(_unitDirection.y + 1.0);
+	float _t = 0.5*(_unitDirection.y + 1.0);
 	return (1.0-_t)*vec3(1.0,1.0,1.0) + _t*vec3(0.5,0.7,1.0);
 }
 
+
+// ====== SSBO ====== //
+
+layout(std430, binding = 5) buffer layoutName
+{
+	//vec4 center;
+	//float radius;
+    //float time;
+	//float temp;
+	sphere test_array[2];
+	
+    float delta_time;
+};
+
+
 void main() {
+	
+	//sphere _one;
+	//_one.position=vec3(0,0,-1);
+	//_one.radius=0.5;
+	
+	//sphere _two;
+	//_two.position=vec3(0,-100.5,-1);
+	//_two.radius=100.0f;
+	
+	//test_array[0] = _one;
+	//test_array[1] = _two;
   // image
   float aspect_ratio = 16.0/9.0;
   int image_width = 400;
@@ -84,7 +158,7 @@ void main() {
   ray r;
   r.origin = origin;
   r.direction = lower_left_corner + u*horizontal + v*vertical - origin;
-  vec3 color = ray_color(r, center.xyz, radius);
+  vec3 color = ray_color(r, test_array);
   vec4 pixel = vec4(color.x, color.y, color.z, 1.0);
   
   imageStore(img_output, pixel_coords, pixel);

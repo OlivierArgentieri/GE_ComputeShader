@@ -55,7 +55,8 @@ void RayTracing::Init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, FrameBufferObject::SIZE_X_VIEWPORT, FrameBufferObject::SIZE_Y_VIEWPORT, 0, GL_RGBA, GL_FLOAT,nullptr);
 
 	/** Create data */
-	//ssbo_data->hittables[0] = &testSphere;
+	ssbo_data->spheres[0] = testSphere;
+	ssbo_data->spheres[1] = testSphere2;
 
 	/** SSBO  */	
 	glGenBuffers(1, &ssbo);
@@ -86,7 +87,7 @@ void RayTracing::Init()
 void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 {
 	//ssbo_data->time += _dt;
-	//ssbo_data->delta_time = _dt;
+	ssbo_data->delta_time = _dt;
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), ssbo_data);
@@ -105,10 +106,10 @@ void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 		glShaderStorageBlockBinding(computeShader.GetProgramID(), _index, 5);
 		memcpy(ssbo_data, glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(SsboData), GL_MAP_READ_BIT), sizeof(SsboData));
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		/**/if (ssbo_data)
+		/*if (ssbo_data)
 		{
 			LOG(Info) << ssbo_data->temp;
-		}
+		}*/
 	}
 
 	Shader::Use(fragmentShader.GetProgramID());
