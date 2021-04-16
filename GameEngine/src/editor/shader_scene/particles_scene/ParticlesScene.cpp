@@ -157,13 +157,14 @@ void ParticlesScene::UpdateSettingsUI(float _dt)
 	ShaderScene::UpdateSettingsUI(_dt);
 	ImGui::ColorEdit3("test color", &testColor[0]);
 
-	/**/if (!ssbo_data) return;
+	/*if (!ssbo_data) return;
 	static string _temp;
 	for (int i = 0; i < NB_PARTICLES; i++)
 	{
 		_temp = "particuleID: " + std::to_string(i);
 		ImGui::InputFloat3(_temp.c_str(), &ssbo_data->vertices[i].x);
-	}
+	}*/
+	ImGui::Text("Rain effect");
 }
 
 void ParticlesScene::Update(float _dt, glm::mat4 _mvp)
@@ -178,5 +179,5 @@ void ParticlesScene::Clean()
 
 char* ParticlesScene::GetName()
 {
-	return "Particles Scene";
+	return "Particles Rain effect";
 }

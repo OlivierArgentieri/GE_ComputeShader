@@ -5,7 +5,7 @@
 #include "RenderTexture.hpp"
 
 
-class RayTracing :  public ShaderScene, RenderView, RenderTexture
+class RayTracing : public ShaderScene, RenderTexture
 {
 
 	
@@ -34,7 +34,7 @@ class RayTracing :  public ShaderScene, RenderView, RenderTexture
 	};
 
 private:
-	void OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp) override;
+	void OglStuff(float _dt, glm::mat4 _mvp);
 	void OnReloadFragmentShader() override;
 	void OnReloadVertexShader() override;
 	void OnReloadComputeShader() override;

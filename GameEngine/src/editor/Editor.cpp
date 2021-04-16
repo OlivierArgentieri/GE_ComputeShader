@@ -31,8 +31,7 @@ void Editor::Init(int _screenWidth, int _screenHeight)
     windowHeight = _screenHeight;
     isRunning = true;
 	
-    RegisterShaderScene(&sampleScene);
-    RegisterShaderScene(&objScene);
+    //RegisterShaderScene(&objScene);
     RegisterShaderScene(&csToTextureScene);
     RegisterShaderScene(&csRayTracing);
     RegisterShaderScene(&particlesScene);

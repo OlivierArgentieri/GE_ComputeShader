@@ -179,7 +179,7 @@ void main() {
   
   if(time > 360) time=0;
 
-  test_array[0].position.y = sin(time*4)*delta_time; // just to test with movement 
+  test_array[0].position.y = sin(time*0.1)*delta_time; // just to test with movement 
   
   
   // image

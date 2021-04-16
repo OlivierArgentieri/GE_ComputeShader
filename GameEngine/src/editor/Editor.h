@@ -42,7 +42,6 @@ public:
 private:
     /* === load shader scene objects ===*/
     ObjScene objScene;
-    ObjSceneTest sampleScene;
     CsToTexture csToTextureScene;
     RayTracing csRayTracing;
     ParticlesScene particlesScene;

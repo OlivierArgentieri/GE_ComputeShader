@@ -182,7 +182,7 @@ void ParticlesSceneSecond::UpdateSettingsUI(float _dt)
 	ShaderScene::UpdateSettingsUI(_dt);
 	ImGui::ColorEdit3("test color", &testColor[0]);
 
-	/**/if (!ssbo_data) return;
+	/*if (!ssbo_data) return;
 	static string _temp;
 	for (int i = 0; i < NB_PARTICLES; i++)
 	{
@@ -191,7 +191,9 @@ void ParticlesSceneSecond::UpdateSettingsUI(float _dt)
 	}
 
 	if (ImGui::Button("Reset Pos"))
-		resetPos();
+		resetPos();*/
+	
+	ImGui::Text("Particle follow mouse");
 }
 
 void ParticlesSceneSecond::Update(float _dt, glm::mat4 _mvp)
@@ -206,5 +208,5 @@ void ParticlesSceneSecond::Clean()
 
 char* ParticlesSceneSecond::GetName()
 {
-	return "Particles Scene test obj";
+	return "Particles Follow Mouse";
 }

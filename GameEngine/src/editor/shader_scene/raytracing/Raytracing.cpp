@@ -66,8 +66,8 @@ void RayTracing::Init()
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // clear
 
 	/** load obj file */
-	gObject.LoadFromFile("assets/raytracing/cube.obj");
-	gObject.ComputeBuffers();
+	//gObject.LoadFromFile("assets/raytracing/cube.obj");
+	//gObject.ComputeBuffers();
 
 	/** Compute Shader */
 	computeShader.LoadShader("assets/raytracing/raytracing.computeshader", GL_COMPUTE_SHADER);
@@ -84,7 +84,7 @@ void RayTracing::Init()
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
 
-void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
+void RayTracing::OglStuff(float _dt, glm::mat4 _mvp)
 {
 	//ssbo_data->time += _dt;
 	ssbo_data->delta_time = _dt;
@@ -120,7 +120,6 @@ void RayTracing::OverrideMeAndFillMeWithOglStuff(float _dt, glm::mat4 _mvp)
 	glBindTexture(GL_TEXTURE_2D, outTexture);
 	glUniform1i(textureID, 0);
 
-	gObject.Draw();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 }
@@ -153,8 +152,8 @@ void RayTracing::OnReloadComputeShader()
 
 void RayTracing::Update(float _dt, glm::mat4 _mvp)
 {
-	RenderView::Render(_dt, _mvp, GetName());
-	RenderTexture::Render();
+	OglStuff(_dt, _mvp);
+	Render();
 	UpdateSettingsUI(_dt);
 }
 
@@ -164,5 +163,5 @@ void RayTracing::Clean()
 
 char* RayTracing::GetName()
 {
-	return "Test raytracing";
+	return "Raytracing";
 }

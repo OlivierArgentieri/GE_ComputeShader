@@ -16,7 +16,7 @@ void main() {
 
   // because time %= 360 not working in glsl
   if(time > 360)
-  { time = -360;}
+  { time = 0;}
   vec4 pixel;
 
   // make circular color
