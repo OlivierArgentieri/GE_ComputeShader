@@ -28,8 +28,8 @@ void RayTracing::Init()
 	glBindVertexArray(VertexArrayID);
 
 	/**/
-	vertexShader.LoadShader("assets/raytracing/Transform.vertexshader", GL_VERTEX_SHADER);
-	fragmentShader.LoadShader("assets/raytracing/Texture.fragmentshader", GL_FRAGMENT_SHADER);
+	vertexShader.LoadShader("assets/raytracing/vert.glsl", GL_VERTEX_SHADER);
+	fragmentShader.LoadShader("assets/raytracing/frag.glsl", GL_FRAGMENT_SHADER);
 
 	vertexShader.CompileShader();
 	fragmentShader.CompileShader();
@@ -70,7 +70,7 @@ void RayTracing::Init()
 	//gObject.ComputeBuffers();
 
 	/** Compute Shader */
-	computeShader.LoadShader("assets/raytracing/raytracing.computeshader", GL_COMPUTE_SHADER);
+	computeShader.LoadShader("assets/raytracing/compute.glsl", GL_COMPUTE_SHADER);
 	computeShader.CompileShader();
 	computeShader.CreateShaderProgram();
 	textureID = glGetUniformLocation(programID, "csRayTracingTexture");
