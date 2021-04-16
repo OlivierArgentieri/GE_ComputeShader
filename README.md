@@ -3,7 +3,7 @@
 ##  Made with :
   - [glm](https://github.com/g-truc/glm)
   - [ImGui](https://github.com/ocornut/imgui)
-  
+  - [RayTracingInOneWeekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html)  
   
 ## Presentation :
 For debug shader and test with hot reload
@@ -30,57 +30,3 @@ Particle follow mouse position:
 Basic Ray tracing with compute shader
 
 ![CS Ray Tracing](https://github.com/OlivierArgentieri/GE_ComputeShader/blob/main/Screen/basic_raytracing.gif)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
