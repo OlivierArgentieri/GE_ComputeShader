@@ -9,7 +9,7 @@
 For debug shader and test with hot reload
 
 ![Hot reload](https://github.com/OlivierArgentieri/GE_ComputeShader/blob/main/Screen/hot_reload.gif)
-
+![Hot reload](https://github.com/OlivierArgentieri/GE_ComputeShader/blob/main/Screen/ParticleScene.gif)
 
 ## Gallery :
 Generate basic texture:
